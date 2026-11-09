@@ -1,0 +1,202 @@
+{
+  "version": 1,
+  "marque": {
+    "nomProduit": "Poste d'appels",
+    "nomEquipe": "Atelier Démo",
+    "userAgent": "AtelierDemoBot/1.0 (+https://example.org/robot)",
+    "couleur": "#2f6f4f"
+  },
+  "pays": {
+    "code": "FR",
+    "fuseau": "Europe/Paris",
+    "indicatif": "+33",
+    "langue": "fr"
+  },
+  "offre": {
+    "nom": "Accompagnement demandes de devis (exemple fictif)",
+    "pourQui": "Les entreprises de paysage et d'entretien de jardins, de 2 à 20 personnes, qui veulent choisir leurs chantiers.",
+    "probleme": "Le carnet de commandes dépend du bouche-à-oreille et des plateformes de mise en relation : les demandes arrivent par à-coups, souvent loin, souvent pour de petits travaux.",
+    "mecanisme": "L'agence rend l'entreprise visible auprès des particuliers de sa zone (fiche locale, page de réalisations, campagnes ciblées), puis filtre les demandes avant de les transmettre.",
+    "promesse": "Vous rendre visible auprès des particuliers de votre zone, filtrer les demandes et vous transmettre celles qui correspondent aux chantiers que vous voulez, avec un suivi clair.",
+    "objectifAppel": "rdv",
+    "rdv": {
+      "nom": "Diagnostic offert",
+      "dureeMin": 20,
+      "canal": "visio"
+    },
+    "phrasePrix": "Le prix dépend de votre zone et du type de chantiers visés : c'est justement ce qu'on regarde ensemble pendant le diagnostic."
+  },
+  "cible": {
+    "description": "Entreprises de création et d'entretien de parcs et jardins, implantées localement, avec une équipe sur le terrain.",
+    "metiers": ["paysagiste", "entretien de jardins", "élagage"],
+    "tailleMin": 2,
+    "tailleMax": 20,
+    "decideur": "gérant",
+    "exclusions": ["Entreprises en liquidation ou en sommeil", "Réseaux franchisés nationaux", "Auto-entrepreneurs sans salarié"]
+  },
+  "script": {
+    "ton": "chaleureux",
+    "vouvoiement": true,
+    "ouverture": {
+      "portable": "Bonjour [prénom], [ton prénom] de [équipe]. Je vous appelle parce que vous dirigez [entreprise] à [ville] : je suis bien avec le gérant ?",
+      "standard": "Bonjour, [ton prénom] de [équipe]. J'aimerais parler au gérant de [entreprise] au sujet de ses demandes de devis : pouvez-vous me le passer ?",
+      "commentAvezVousMonNumero": "J'ai trouvé votre entreprise dans le registre public des entreprises, et ce numéro sur votre site internet. Si vous préférez que je ne rappelle plus, je le note tout de suite."
+    },
+    "permission": "Je vous prends deux minutes pour vous dire pourquoi j'appelle, et vous me dites si ça vaut la peine d'aller plus loin. Ça vous va ?",
+    "questions": [
+      {
+        "id": "source_clients",
+        "texte": "Aujourd'hui, vos nouveaux clients arrivent surtout comment : bouche-à-oreille, plateformes, autre chose ?",
+        "but": "Connaître la source actuelle des chantiers."
+      },
+      {
+        "id": "chantiers_voulus",
+        "texte": "Quels chantiers aimeriez-vous faire davantage : création, entretien régulier, gros aménagements ?",
+        "but": "Savoir quel type de demande l'intéresse."
+      },
+      {
+        "id": "zone",
+        "texte": "Jusqu'où acceptez-vous de vous déplacer pour un chantier ?",
+        "but": "Mesurer la zone utile."
+      },
+      {
+        "id": "capacite",
+        "texte": "Si vous receviez plus de demandes sérieuses, auriez-vous la place dans le planning pour les traiter ?",
+        "but": "Vérifier qu'il peut prendre de nouveaux chantiers."
+      }
+    ],
+    "pitch": "Nous travaillons uniquement avec des entreprises du paysage. Notre rôle : vous rendre visible auprès des particuliers de votre zone, filtrer les demandes, et vous transmettre celles qui correspondent aux chantiers que vous voulez faire. Le diagnostic sert à voir, sur votre zone, si c'est pertinent pour vous.",
+    "close": "Le plus simple, c'est d'en parler vingt minutes en visio, agenda sous les yeux. Je peux vous proposer [deux créneaux] : lequel vous arrange le mieux ?",
+    "messagerie": "Bonjour [prénom], [ton prénom] de [équipe]. Je vous appelais au sujet des demandes de devis de [entreprise] dans votre secteur. Je vous rappelle dans les prochains jours. Bonne journée.",
+    "crochets": ["[prénom]", "[ton prénom]", "[équipe]", "[entreprise]", "[ville]", "[deux créneaux]"]
+  },
+  "objections": [
+    {
+      "code": "pas-le-temps",
+      "libelle": "Je n'ai pas le temps",
+      "reponse": "Je comprends, vous êtes sur les chantiers. C'est pour ça que je vous propose un échange court, au moment qui vous arrange : plutôt en début de matinée ou en fin de journée ?",
+      "relance": "Je vous propose [deux créneaux] ; si aucun ne va, donnez-moi le vôtre."
+    },
+    {
+      "code": "assez-de-travail",
+      "libelle": "J'ai déjà assez de travail",
+      "reponse": "Tant mieux, c'est bon signe. La question n'est pas d'avoir plus de travail, c'est de choisir les chantiers qui vous plaisent le plus. Il vous arrive d'en refuser ?"
+    },
+    {
+      "code": "deja-une-agence",
+      "libelle": "Je travaille déjà avec quelqu'un",
+      "reponse": "Très bien. Qu'est-ce qui vous plaît dans ce qu'ils font, et qu'aimeriez-vous voir en plus ? Le diagnostic peut servir de point de comparaison, sans rien changer à ce qui fonctionne."
+    },
+    {
+      "code": "envoyez-un-mail",
+      "libelle": "Envoyez-moi un mail",
+      "reponse": "Avec plaisir. Pour vous envoyer quelque chose d'utile, et pas une brochure de plus : quel type de chantier voulez-vous développer en priorité ?",
+      "relance": "Et pour en parler de vive voix ensuite, je vous propose [deux créneaux]."
+    },
+    {
+      "code": "combien-ca-coute",
+      "libelle": "Combien ça coûte ?",
+      "reponse": "Ça dépend de votre zone et des chantiers visés, et je ne veux pas vous donner un chiffre au hasard. C'est ce qu'on regarde ensemble pendant le diagnostic."
+    },
+    {
+      "code": "plateformes-suffisent",
+      "libelle": "Les plateformes me suffisent",
+      "reponse": "D'accord. Les demandes que vous y recevez vous conviennent-elles, sur la distance et le type de travaux ? Si oui, on n'a peut-être pas besoin de se parler ; sinon, le diagnostic sert à voir une autre voie."
+    }
+  ],
+  "issues": [
+    { "code": "pas_repondu", "libelle": "Pas de réponse", "touche": "1", "rappelAuto": "creneau_alterne", "final": false },
+    { "code": "messagerie", "libelle": "Messagerie", "touche": "2", "rappelAuto": "creneau_alterne", "final": false },
+    {
+      "code": "standard",
+      "libelle": "Standard ou barrage",
+      "touche": "3",
+      "rappelAuto": "creneau_alterne",
+      "final": false,
+      "gabaritNote": ["Interlocuteur", "Meilleur moment"]
+    },
+    { "code": "a_rappeler", "libelle": "À rappeler", "touche": "4", "final": false, "exigeRappel": true, "gabaritNote": ["Pourquoi", "Avec qui"] },
+    {
+      "code": "rdv_fixe",
+      "libelle": "Rendez-vous fixé",
+      "touche": "5",
+      "final": true,
+      "gabaritNote": ["Source actuelle", "Chantiers voulus", "Zone"]
+    },
+    { "code": "pas_interesse", "libelle": "Pas intéressé", "touche": "6", "final": true, "gabaritNote": ["Raison"] },
+    { "code": "hors_cible", "libelle": "Hors cible", "touche": "7", "final": true, "gabaritNote": ["Raison"] },
+    { "code": "ne_plus_contacter", "libelle": "Ne plus contacter", "touche": "8", "final": true },
+    { "code": "sous_contrat", "libelle": "Engagé ailleurs", "touche": "9", "final": true, "gabaritNote": ["Jusqu'à quand"] }
+  ],
+  "tentativesMax": 4,
+  "score": {
+    "criteres": [
+      { "id": "societe", "type": "forme_juridique", "regle": { "inclure": ["5498", "5499", "5710", "5720"] }, "points": 15 },
+      { "id": "taille", "type": "effectif", "regle": { "min": 3, "max": 20 }, "points": 25 },
+      { "id": "installee", "type": "anciennete", "regle": { "minAns": 3 }, "points": 15 },
+      { "id": "metier_dans_le_nom", "type": "mot_nom", "regle": { "mots": ["paysag", "jardin", "espaces verts"] }, "points": 10 },
+      { "id": "naf_paysage", "type": "naf", "regle": { "inclure": ["81.30Z"] }, "points": 15 },
+      { "id": "avis", "type": "note_google", "regle": { "min": 4, "avisMin": 10 }, "points": 10 },
+      { "id": "site", "type": "a_site", "regle": {}, "points": 5 },
+      { "id": "email", "type": "a_email", "regle": {}, "points": 5 }
+    ],
+    "seuils": { "A": 70, "B": 45 },
+    "plafond": 100
+  },
+  "sources": {
+    "sirene": {
+      "naf": ["81.30Z"],
+      "departements": ["69", "38", "42"],
+      "motsNomExclure": ["holding"],
+      "exclureEI": true,
+      "etatAdministratif": "A"
+    },
+    "maps": {
+      "actif": false,
+      "motsCles": ["paysagiste"],
+      "villes": ["Lyon"],
+      "max": 200
+    },
+    "motsVidesAppariement": ["sarl", "sas", "sasu", "eurl", "paysage", "paysages", "jardin", "jardins", "et", "de", "des", "du", "la", "le", "les"],
+    "prefixesEmail": ["contact", "info", "bonjour", "devis"]
+  },
+  "accroche": {
+    "actif": true,
+    "exemples": [
+      "J'ai vu sur votre site la terrasse en bois et le massif de graminées que vous avez réalisés : c'est ce type de chantier que vous voulez développer ?",
+      "Vos photos de bassins naturels m'ont arrêté : ce sont des projets que vous aimeriez faire plus souvent ?",
+      "Je vois que vous proposez l'entretien à l'année : c'est une part importante de votre activité aujourd'hui ?"
+    ],
+    "motsIndices": ["terrasse", "bassin", "potager", "clôture", "élagage", "gazon", "arrosage", "massif", "allée"],
+    "interdits": ["meilleur", "numéro un", "leader", "incroyable"],
+    "longueurMax": 160
+  },
+  "debrief": {
+    "champs": [
+      { "id": "source_clients", "question": "D'où viennent ses clients aujourd'hui ?" },
+      { "id": "chantiers_voulus", "question": "Quels chantiers veut-il faire davantage ?" },
+      { "id": "frein_principal", "question": "Qu'est-ce qui le freine le plus ?" },
+      { "id": "zone", "question": "Quelle zone couvre-t-il ?" }
+    ]
+  },
+  "telephonie": {
+    "fournisseur": "telephone",
+    "mode": "lien",
+    "schemaLien": "tel",
+    "copierNumero": true,
+    "enregistrement": false
+  },
+  "agenda": {
+    "fournisseur": "aucun",
+    "prefill": false,
+    "champLead": "utm_content"
+  },
+  "legal": {
+    "responsable": "Atelier Démo (exemple fictif)",
+    "contactRGPD": "rgpd@example.org",
+    "annonceEnregistrement": "Je vous préviens que cet appel est enregistré pour le suivi de notre échange. Vous pouvez me demander d'arrêter l'enregistrement à tout moment.",
+    "phraseOpposition": "Si vous ne souhaitez plus être contacté, dites-le-moi : je le note tout de suite et nous ne vous rappellerons plus.",
+    "phraseSource": "Vos coordonnées professionnelles viennent de sources publiques : le registre public des entreprises et le site internet de votre entreprise.",
+    "conservationMois": 36
+  }
+}

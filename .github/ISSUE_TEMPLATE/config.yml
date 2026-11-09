@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question, aide, retour d'usage
+    url: https://github.com/Aupsyy/cold-dialer/discussions
+    about: Une question sur l'installation, la config ou l'usage se pose dans les discussions, pas en issue.
+  - name: Faille de sécurité
+    url: https://github.com/Aupsyy/cold-dialer/security/advisories/new
+    about: Jamais en issue publique. Le signalement privé reste entre toi et les mainteneurs (voir SECURITY.md).

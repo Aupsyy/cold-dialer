@@ -1,0 +1,49 @@
+# Dépendances et constructions
+node_modules
+.next/
+out/
+build/
+coverage/
+*.tsbuildinfo
+.vercel/
+.supabase/
+supabase/.branches/
+supabase/.temp/
+
+# Secrets : JAMAIS dans le dépôt (seul le modèle .env.example, sans valeurs, est suivi)
+.env*
+!.env.example
+
+# Données de prospection : jamais dans le dépôt
+donnees/
+*.csv
+cache/
+scratchpad/
+
+# Système et éditeurs
+.DS_Store
+*.log
+.idea/
+.vscode/
+
+# Audio, exports et transcriptions : jamais dans le dépôt (un poste d'appels en produit)
+*.mp3
+*.wav
+*.m4a
+*.ogg
+*.webm
+*.aac
+*.amr
+*.vcf
+*.xlsx
+*.xls
+*.ods
+*.tsv
+*.jsonl
+transcript*
+
+# Dossiers d'outils
+.claude/
+.playwright-mcp/
+test-results/
+playwright-report/

@@ -1,0 +1,16 @@
+{
+  "framework": "nextjs",
+  "regions": [
+    "cdg1"
+  ],
+  "crons": [
+    {
+      "path": "/api/agenda/google/sync",
+      "schedule": "0 5 * * *"
+    },
+    {
+      "path": "/api/telephonie/recuperation",
+      "schedule": "17 6 * * *"
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+name: Bug
+description: Quelque chose ne marche pas (écran, script, webhook, test, build).
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci. Une règle avant tout : **aucune donnée réelle** dans ce ticket (ni fiche, ni numéro, ni e-mail, ni secret, ni adresse
+        d'une instance en service). Reproduis avec les données fictives du dépôt (`npm run install:demo`).
+  - type: textarea
+    id: quoi
+    attributes:
+      label: Ce qui se passe
+      description: Ce que tu as fait, ce que tu attendais, ce qui s'est passé à la place. Le code d'erreur exact s'il y en a un.
+    validations:
+      required: true
+  - type: textarea
+    id: etapes
+    attributes:
+      label: Comment le reproduire
+      placeholder: |
+        1. …
+        2. …
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Le commit de ta copie (`git rev-parse --short HEAD`) ou la date à laquelle tu as copié le modèle.
+  - type: dropdown
+    id: bloc
+    attributes:
+      label: Bloc concerné
+      options:
+        - Poste d'appels et fiches
+        - Téléphonie (Onoff, Aircall, Ringover, softphone, téléphone)
+        - Agenda (Calendly, iClosed, Google, interne, ICS)
+        - Sourcing
+        - Accroches
+        - Débrief et retours du marché
+        - Réglages, équipe, RGPD
+        - Installation, scripts, CI
+        - Autre
+  - type: checkboxes
+    id: regles
+    attributes:
+      label: Vérifications
+      options:
+        - label: Ce ticket ne contient aucune donnée réelle ni aucun secret.
+          required: true
+        - label: J'ai relu la documentation du bloc concerné (`docs/`).

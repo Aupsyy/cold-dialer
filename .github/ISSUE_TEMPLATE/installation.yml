@@ -1,0 +1,50 @@
+name: Problème d'installation
+description: Une étape du guide (docs/installation.md) ou du skill installer ne passe pas.
+title: "[Installation] "
+labels: ["installation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Avant tout : **aucun secret et aucune donnée réelle** dans ce ticket. Des NOMS de variables, jamais leur valeur ; masque
+        l'adresse de ta base et de ton projet ; garde les codes d'erreur.
+  - type: dropdown
+    id: etape
+    attributes:
+      label: L'étape du guide
+      options:
+        - 1. Le dépôt
+        - 2. Supabase (projet, migration, adresse de la base, clés, authentification)
+        - 3. La configuration de la niche (config/niche.json)
+        - 4. Vercel (projet, variables, déploiement, secrets des webhooks, tâches planifiées)
+        - 5. Vérifier (npm run install:verifier)
+        - 6. Le compte propriétaire et l'équipe
+        - 7. Les fournisseurs (téléphonie, agenda)
+        - 8. La démonstration
+        - 9. Le premier import
+        - 10. L'enregistrement des appels
+        - Le skill installer (Claude Code)
+        - Autre
+    validations:
+      required: true
+  - type: textarea
+    id: commande
+    attributes:
+      label: La commande lancée et ce qu'elle a affiché
+      description: Colle la commande et la sortie, après avoir masqué toute valeur de clé, de jeton ou d'adresse.
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: environnement
+    attributes:
+      label: Ton environnement
+      description: Système, version de Node (`node -v`), outil de téléphonie et d'agenda choisis.
+  - type: checkboxes
+    id: regles
+    attributes:
+      label: Vérifications
+      options:
+        - label: Ce ticket ne contient aucun secret ni aucune donnée réelle.
+          required: true
+        - label: J'ai relu l'étape dans `docs/installation.md`.

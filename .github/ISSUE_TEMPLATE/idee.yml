@@ -1,0 +1,41 @@
+name: Idée ou amélioration
+description: Un nouvel adaptateur (téléphonie, agenda), un champ de config, un écran, une documentation.
+title: "[Idée] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Le circuit est dans `CONTRIBUTING.md` : une issue d'abord pour tout changement de fond ; on s'accorde sur le besoin avant
+        d'écrire le code. Aucune donnée réelle dans le ticket.
+  - type: textarea
+    id: besoin
+    attributes:
+      label: Le besoin
+      description: Quelle équipe, quelle situation d'appel, ce qui manque aujourd'hui et ce que ça coûte (du temps, des erreurs).
+    validations:
+      required: true
+  - type: textarea
+    id: proposition
+    attributes:
+      label: Ce que tu proposes
+      description: Le comportement voulu, l'écran ou la commande concernés, un exemple de config si c'est un champ de `config/niche.json`.
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type de changement
+      options:
+        - Adaptateur de téléphonie
+        - Adaptateur d'agenda
+        - Config de la niche (config/niche.json et son schéma)
+        - Écran
+        - Script ou skill Claude Code
+        - Documentation
+        - Autre
+  - type: checkboxes
+    id: aide
+    attributes:
+      label: Ce que tu peux faire
+      options:
+        - label: Je peux écrire le code.
+        - label: Je peux tester sur une instance de test.
