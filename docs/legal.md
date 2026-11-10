@@ -12,18 +12,27 @@ ce qu'elle dit et ce qu'elle garde.
 | Source | Ce qui est pris | Les règles |
 |---|---|---|
 | Le registre SIRENE (API Recherche Entreprises, publique et sans clé) | nom, enseigne, SIREN, SIRET du siège, NAF, catégorie juridique, date de création, tranche d'effectif, commune, code postal, département ; du dirigeant : prénom, nom et qualité seulement | ni date de naissance, ni nationalité, ni adresse ; les entreprises en **diffusion partielle** sont écartées dès la récolte (voir plus bas) |
-| Le site de l'entreprise | l'e-mail **publié** par l'entreprise (avec la page et la date), les lignes utiles à une accroche | robots.txt lu et respecté, une requête par seconde au plus par domaine, un robot qui se présente (`marque.userAgent`), aucun e-mail deviné ni construit |
-| Google Maps | téléphone, site, note et nombre d'avis d'une fiche | **désactivé par défaut** (`sources.maps.actif: false`) : voir plus bas |
+| Le site de l'entreprise | l'e-mail **publié** par l'entreprise (avec la page et la date), les lignes utiles à une accroche, la présence d'un pixel publicitaire, d'une balise Google Ads, d'un outil de rendez-vous, d'une agence créditée (`enrichir.mjs`) | robots.txt lu et respecté, une requête par seconde au plus par domaine, un robot qui se présente (`marque.userAgent`), aucun e-mail deviné ni construit |
+| Google, par l'API officielle Places | téléphone, site, note et nombre d'avis d'une fiche, et son `place_id` | **désactivé par défaut** (`sources.places.actif: false`) : clé, quota et facturation de l'équipe ; voir plus bas |
+| Le registre public, pour l'enrichissement (`enrichir.mjs`) | chiffre d'affaires publié, effectif, employeur ou non, état (active ou cessée), date de création | mêmes règles que le registre SIRENE ; une entreprise en diffusion partielle n'est jamais gardée |
 | Ton propre fichier (annuaire, export de CRM, liste d'un fournisseur) | ce qu'il contient, au format de `docs/sourcing.md` | seulement si l'équipe connaît et garde son origine (colonne `source`, et sa date) |
 
 **La non-diffusion.** Une personne qui dirige une entreprise individuelle peut demander à l'INSEE que ses données ne servent pas à la
 prospection (statut de diffusion partielle). `scripts/sourcing/sirene.mjs` écarte ces entreprises dès la récolte : rien d'elles n'est
 gardé, même dans le cache.
 
-**Google Maps.** Lire Google Maps avec un robot va contre les conditions d'utilisation de Google : captchas, adresse IP bloquée, compte
-suspendu, voire une action de Google contre l'utilisateur. Le script refuse de tourner tant que l'équipe ne l'a pas activé elle-même ;
-l'activer, et en porter le risque, est son choix (`docs/sourcing.md`, section « Google Maps »). L'alternative officielle est l'API
-Google Places, payante, qui n'est pas fournie ici.
+**Google Places et la conservation du contenu.** L'outil lit Google par l'API officielle Places (New), jamais avec un robot,, avec la clé et la facturation de l'équipe, dans le cadre des conditions de Google Maps Platform. Ces conditions
+**limitent la conservation du contenu** de Places : l'identifiant `place_id` peut être gardé, mais le reste (téléphone, site, note,
+nombre d'avis…) doit être rafraîchi ou supprimé sous 30 jours. Lis les conditions officielles (https://cloud.google.com/maps-platform/terms),
+en particulier les règles de mise en cache et de stockage du contenu de Google, et fais-les relire si l'enjeu le demande : elles
+changent, et ce document ne les remplace pas.
+
+Ce que fait `places.mjs` : il ne demande à Google que les champs utiles ; il garde dans le CSV le `place_id`, un lien bâti sur ce
+`place_id` et la **date de lecture** (`source_date`) ; son état de reprise (`donnees/cache/places-*.json`) ne contient que la
+progression, aucun contenu de Google, et n'est pas repris au-delà de 30 jours ; à la fin de chaque exécution il rappelle que le contenu
+lu est à rafraîchir ou à supprimer sous 30 jours. Ce qu'il ne fait pas : supprimer à ta place les fichiers de `donnees/` ni les
+champs déjà importés dans la base. Respecter le délai (relire la fiche par son `place_id` avec `places.mjs enrichir`, ou supprimer le
+contenu) reste le travail de l'équipe.
 
 **Pas de LinkedIn.** Ni par script, ni par extension de navigateur, ni à la main pour remplir les fiches en masse : ses conditions
 d'utilisation l'interdisent. Les scripts d'accroches refusent aussi de lire un réseau social, un annuaire ou une carte : seulement le
@@ -43,7 +52,7 @@ points.
   avez-vous mon numéro ? », à côté de la réponse du script. Dis-les dès que la question vient ; ne la laisse jamais sans réponse.
 - **Les phrases doivent rester vraies.** Dans l'exemple, la réponse du script (`script.ouverture.commentAvezVousMonNumero`) et
   `legal.phraseSource` parlent du registre public des entreprises et du site de l'entreprise : le parcours par défaut (registre SIRENE,
-  Google Maps désactivé). Si tes numéros viennent aussi de Google Maps, d'un annuaire ou de ton propre fichier, réécris les deux dans
+  Google Places désactivé). Si tes numéros viennent aussi de Google Places, d'un annuaire ou de ton propre fichier, réécris les deux dans
   `config/niche.json`, puis `npm test`.
 - `legal.responsable` (qui est responsable du traitement) et `legal.contactRGPD` (l'adresse publique où exercer ses droits) se donnent
   à qui les demande.

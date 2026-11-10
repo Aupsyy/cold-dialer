@@ -13,7 +13,7 @@
 // Non-diffusion : une personne qui dirige une entreprise individuelle peut demander que ses données ne servent pas à la prospection
 // (statut de diffusion partielle de l'INSEE). Ces unités sont écartées dès la récolte : rien d'elles n'est gardé, même dans le cache.
 // Des données de dirigeants, seuls le prénom, le nom et la qualité sont gardés (ni date de naissance, ni nationalité).
-// SIRENE ne couvre que la France : pour la Belgique, la Suisse ou le Canada, voir docs/sourcing.md (Maps ou import CSV).
+// SIRENE ne couvre que la France : pour la Belgique, la Suisse ou le Canada, voir docs/sourcing.md (Google Places ou import CSV).
 //
 // Usage :
 //   node scripts/sourcing/sirene.mjs fetch [--essai] [--limite N] [--dossier <chemin>] [--config <niche.json>]
@@ -226,7 +226,7 @@ function ecrireEtat(dossier, etat) {
  */
 export async function recolter({ niche, dossier, limite = null, essai = false, dependances = {} }) {
   const sirene = niche.sources.sirene;
-  if (!sirene) throw new ErreurSourcing("config/niche.json n'a pas de sources.sirene : rien à récolter (hors France : Maps ou import CSV, voir docs/sourcing.md).");
+  if (!sirene) throw new ErreurSourcing("config/niche.json n'a pas de sources.sirene : rien à récolter (hors France : Google Places ou import CSV, voir docs/sourcing.md).");
   const attendre = dependances.attendre ?? attendreVraiment;
   const ctx = {
     fetch: dependances.fetch ?? globalThis.fetch,
@@ -523,7 +523,7 @@ export function construire({ niche, dossier, limite = null, essai = false, sorti
     const chemin = sortie ?? join(dossier, `sirene-${aujourdhui}.csv`);
     ecrireTableau(chemin, gardees, Object.keys(gardees[0]));
     rapport.push(`Écrit : ${cheminAffiche(chemin)}`);
-    rapport.push("SIRENE ne donne ni téléphone ni site : voir docs/sourcing.md (Maps facultatif, ou ton propre fichier, puis appariement).");
+    rapport.push("SIRENE ne donne ni téléphone ni site : voir docs/sourcing.md (Google Places facultatif, ou ton propre fichier, puis appariement).");
   }
   return { code: 0, lignes: rapport, compteurs: c };
 }

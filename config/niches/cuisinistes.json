@@ -1,0 +1,245 @@
+{
+  "code": "cuisinistes",
+  "metier": "Cuisinistes",
+  "tailleVisee": "2 à 15 salariés",
+  "pourquoi": "Un projet de cuisine commence presque toujours par une recherche locale et un rendez-vous en magasin : le gérant sait ce que lui coûte un showroom vide. L'achat est réfléchi, donc le panier moyen supporte une prestation de visibilité.",
+  "cible": {
+    "description": "Cuisinistes indépendants avec showroom ou atelier, qui conçoivent, vendent et font poser des cuisines pour des particuliers.",
+    "metiers": [
+      "cuisiniste",
+      "cuisines sur mesure",
+      "agencement de cuisine"
+    ],
+    "tailleMin": 2,
+    "tailleMax": 15,
+    "decideur": "gérant",
+    "exclusions": [
+      "Enseignes et réseaux de franchise nationaux",
+      "Magasins de meubles généralistes",
+      "Entreprises en liquidation ou en sommeil"
+    ]
+  },
+  "sources": {
+    "sirene": {
+      "naf": [
+        "47.59A",
+        "31.02Z"
+      ],
+      "motsNomInclure": [
+        "cuisin"
+      ],
+      "motsNomExclure": [
+        "holding"
+      ],
+      "exclureEI": true
+    },
+    "motsVidesAppariement": [
+      "sarl",
+      "sas",
+      "sasu",
+      "eurl",
+      "cuisine",
+      "cuisines",
+      "cuisiniste",
+      "agencement",
+      "et",
+      "de",
+      "des",
+      "du",
+      "la",
+      "le",
+      "les"
+    ],
+    "prefixesEmail": [
+      "contact",
+      "info",
+      "bonjour",
+      "magasin",
+      "showroom"
+    ]
+  },
+  "google": {
+    "motsCles": [
+      "cuisiniste",
+      "cuisine sur mesure",
+      "magasin de cuisines",
+      "installation de cuisine"
+    ]
+  },
+  "score": {
+    "criteres": [
+      {
+        "id": "societe",
+        "type": "forme_juridique",
+        "regle": {
+          "inclure": [
+            "5498",
+            "5499",
+            "5710",
+            "5720"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "taille",
+        "type": "effectif",
+        "regle": {
+          "min": 2,
+          "max": 15
+        },
+        "points": 20
+      },
+      {
+        "id": "installee",
+        "type": "anciennete",
+        "regle": {
+          "minAns": 3
+        },
+        "points": 15
+      },
+      {
+        "id": "naf_metier",
+        "type": "naf",
+        "regle": {
+          "inclure": [
+            "47.59A",
+            "31.02Z"
+          ]
+        },
+        "points": 10
+      },
+      {
+        "id": "metier_dans_le_nom",
+        "type": "mot_nom",
+        "regle": {
+          "mots": [
+            "cuisin"
+          ]
+        },
+        "points": 20
+      },
+      {
+        "id": "avis",
+        "type": "note_google",
+        "regle": {
+          "min": 4,
+          "avisMin": 10
+        },
+        "points": 10
+      },
+      {
+        "id": "site",
+        "type": "a_site",
+        "regle": {},
+        "points": 5
+      },
+      {
+        "id": "email",
+        "type": "a_email",
+        "regle": {},
+        "points": 5
+      }
+    ],
+    "seuils": {
+      "A": 70,
+      "B": 45
+    },
+    "plafond": 100
+  },
+  "script": {
+    "questions": [
+      {
+        "id": "source_projets",
+        "texte": "Vos clients viennent surtout comment : passage devant le magasin, recherche sur internet, maîtres d'œuvre ou constructeurs, bouche-à-oreille ?",
+        "but": "Connaître la source actuelle des projets."
+      },
+      {
+        "id": "type_projets",
+        "texte": "Vous faites plutôt de la cuisine sur mesure, de la cuisine de marque, ou un mélange des deux ?",
+        "but": "Situer son positionnement et son panier."
+      },
+      {
+        "id": "rendez_vous_showroom",
+        "texte": "Quand quelqu'un pousse la porte du showroom, il a déjà son projet bien avancé ou il vient en repérage ?",
+        "but": "Mesurer la maturité des visiteurs."
+      },
+      {
+        "id": "capacite_pose",
+        "texte": "Si les projets étaient plus nombreux, vos équipes de conception et de pose pourraient suivre ?",
+        "but": "Vérifier la capacité à absorber des projets."
+      }
+    ]
+  },
+  "objections": [
+    {
+      "code": "pas-le-temps",
+      "libelle": "Je n'ai pas le temps",
+      "reponse": "Je comprends, entre les clients et les poses, vous êtes pris. Je ne reste pas longtemps : on cale un échange court à un moment calme de votre semaine, plutôt le matin ou en fin de journée ?",
+      "relance": "Je vous propose [deux créneaux] ; sinon, donnez-moi le vôtre."
+    },
+    {
+      "code": "showroom-plein",
+      "libelle": "Mon showroom ne désemplit pas",
+      "reponse": "Tant mieux. La question est alors de savoir si ces visites donnent les projets que vous voulez : plutôt haut de gamme, plutôt rapides à concrétiser. Vous en êtes satisfait ?"
+    },
+    {
+      "code": "deja-une-agence",
+      "libelle": "J'ai déjà quelqu'un pour mon site",
+      "reponse": "Très bien. Qu'est-ce qui fonctionne dans ce qu'il fait, et qu'aimeriez-vous voir en plus ? L'échange peut servir de point de comparaison, sans rien changer à ce qui marche."
+    },
+    {
+      "code": "marque-fournisseur",
+      "libelle": "Mon fournisseur s'occupe de la pub",
+      "reponse": "C'est un vrai appui. Cela dit, la publicité d'une marque ne parle pas forcément de votre showroom dans votre ville. Savez-vous ce que vos voisins voient quand ils cherchent un cuisiniste ?"
+    },
+    {
+      "code": "envoyez-un-mail",
+      "libelle": "Envoyez-moi un mail",
+      "reponse": "Avec plaisir. Pour vous écrire quelque chose d'utile : quel type de projet voulez-vous voir arriver davantage, du sur mesure ou de la cuisine plus accessible ?",
+      "relance": "Et pour en parler de vive voix ensuite, je vous propose [deux créneaux]."
+    },
+    {
+      "code": "combien-ca-coute",
+      "libelle": "Combien ça coûte ?",
+      "reponse": "Ça dépend de votre zone et de ce que vous voulez développer, et je ne veux pas vous donner un chiffre au hasard. C'est justement ce qu'on regarde ensemble pendant l'échange."
+    }
+  ],
+  "accroche": {
+    "exemples": [
+      "J'ai vu sur votre site la cuisine avec îlot en chêne et plan de travail en pierre que vous avez posée : ce sont les projets à développer ?",
+      "Votre showroom met en avant des cuisines sur mesure : c'est ce type de projet que vous cherchez à développer dans votre secteur aujourd'hui ?",
+      "Je vois que vous proposez la conception, la fourniture et la pose : c'est ce service complet qui fait la différence auprès de vos clients ?"
+    ],
+    "motsIndices": [
+      "îlot",
+      "plan de travail",
+      "sur mesure",
+      "showroom",
+      "pose",
+      "électroménager",
+      "rangement",
+      "conception"
+    ]
+  },
+  "debrief": {
+    "champs": [
+      {
+        "id": "source_projets",
+        "question": "D'où viennent ses projets de cuisine aujourd'hui ?"
+      },
+      {
+        "id": "positionnement",
+        "question": "Sur mesure, marque, ou mélange : où se situe-t-il ?"
+      },
+      {
+        "id": "visites_showroom",
+        "question": "Comment se passent les visites au showroom ?"
+      },
+      {
+        "id": "frein_principal",
+        "question": "Qu'est-ce qui le freine le plus ?"
+      }
+    ]
+  }
+}

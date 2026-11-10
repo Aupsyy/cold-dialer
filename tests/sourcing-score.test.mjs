@@ -25,6 +25,9 @@ test("chaque type de critère du schéma est pris en charge", () => {
     note_google: [critere("note_google", { min: 4 }), { note_google: "4,5" }],
     a_site: [critere("a_site", {}), { site: "https://example.org/atelier-demo-01" }],
     a_email: [critere("a_email", {}), { email: "contact@example.org" }],
+    chiffre_affaires: [critere("chiffre_affaires", { min: 150000 }), { chiffre_affaires: "350000" }],
+    employeur: [critere("employeur", {}), { employeur: "oui" }],
+    signal_site: [critere("signal_site", { absents: ["pixel_meta"] }), { site_joignable: "oui", signaux_site: "prise_rdv" }],
   };
   assert.deepEqual(Object.keys(exemples).sort(), [...TYPES_CRITERE_SCORE].sort());
   for (const [type, [c, fiche]] of Object.entries(exemples)) {
@@ -185,4 +188,82 @@ test("le script : écrit <entree>-score.csv, garde les autres colonnes, ne cite 
   } finally {
     dossier.supprimer();
   }
+});
+
+test("chiffre_affaires : bornes comprises, montants écrits à la française, donnée absente = ni gain ni perte", () => {
+  const c = critere("chiffre_affaires", { min: 150000, max: 1000000 });
+  assert.equal(vrai(c, { chiffre_affaires: "150000" }), true);
+  assert.equal(vrai(c, { chiffre_affaires: "1 000 000" }), true);
+  assert.equal(vrai(c, { chiffre_affaires: "149999" }), false);
+  assert.equal(vrai(c, { chiffre_affaires: "1000001" }), false);
+  assert.equal(vrai(c, { chiffre_affaires: "350000,00" }), true);
+  assert.equal(vrai(c, { chiffre_affaires: "" }), false);
+  assert.equal(vrai(c, { chiffre_affaires: "non publié" }), false);
+  // un malus sur « petit chiffre d'affaires » ne frappe pas une fiche dont le chiffre n'est pas publié
+  const malus = { seuils: { A: 70, B: 45 }, plafond: 100, criteres: [{ id: "petit", type: "chiffre_affaires", regle: { max: 49999 }, points: -20 }, { id: "ville", type: "ville", regle: { inclure: ["Lyon"] }, points: 50 }] };
+  const { lignes } = noterTableau([{ ville: "Lyon", chiffre_affaires: "30000" }, { ville: "Lyon" }], malus, AUJOURDHUI);
+  assert.deepEqual(lignes.map((l) => l.score), ["30", "50"]);
+});
+
+test("employeur : oui par défaut, non avec valeur false, inconnu = faux", () => {
+  assert.equal(vrai(critere("employeur", {}), { employeur: "oui" }), true);
+  assert.equal(vrai(critere("employeur", {}), { employeur: "non" }), false);
+  assert.equal(vrai(critere("employeur", { valeur: false }), { employeur: "non" }), true);
+  assert.equal(vrai(critere("employeur", { valeur: false }), { employeur: "" }), false, "inconnu : pas de malus non plus");
+});
+
+test("signal_site : présents et absents ; un site non lu ne compte jamais, ni pour ni contre", () => {
+  const sansPub = critere("signal_site", { absents: ["pixel_meta", "balise_google_ads"] });
+  assert.equal(vrai(sansPub, { site_joignable: "oui", signaux_site: "prise_rdv" }), true);
+  assert.equal(vrai(sansPub, { site_joignable: "oui", signaux_site: "" }), true);
+  assert.equal(vrai(sansPub, { site_joignable: "oui", signaux_site: "pixel_meta,prise_rdv" }), false);
+  assert.equal(vrai(sansPub, { site_joignable: "non", signaux_site: "" }), false, "site injoignable : on ne dit pas qu'il n'a pas de pub");
+  assert.equal(vrai(sansPub, { signaux_site: "" }), false, "site pas lu");
+  const equipee = critere("signal_site", { presents: ["pixel_meta", "prise_rdv"] });
+  assert.equal(vrai(equipee, { site_joignable: "oui", signaux_site: "pixel_meta,prise_rdv" }), true);
+  assert.equal(vrai(equipee, { site_joignable: "oui", signaux_site: "pixel_meta" }), false, "tous les signaux demandés");
+  assert.equal(vrai(critere("signal_site", { presents: ["site_joignable"] }), { site_joignable: "oui" }), true);
+  assert.equal(vrai(critere("signal_site", { absents: ["site_joignable"] }), { site_joignable: "non" }), true);
+  assert.equal(vrai(critere("signal_site", { absents: ["site_joignable"] }), {}), false);
+});
+
+test("cessée au registre : écartée (score 0, tier C) sans critère déclaré ; active ou inconnue : score normal", () => {
+  const n = niche();
+  const base = { forme_juridique: "SARL", effectif: "3 à 5 salariés", date_creation: "2015-01-01", naf: "81.30Z" };
+  const { lignes, compteurs } = noterTableau([{ ...base, etat_registre: "C" }, { ...base, etat_registre: "A" }, { ...base }], n.score, AUJOURDHUI);
+  assert.deepEqual(lignes.map((l) => [l.score, l.tier]), [["0", "C"], ["70", "A"], ["70", "A"]]);
+  assert.equal(lignes[0].score_detail, "cessee");
+  assert.equal(compteurs.criteres.cessee, 1);
+  assert.equal(calculerScore({ ...base, etat_registre: "c" }, n.score, { aujourdhui: AUJOURDHUI }).tier, "C");
+});
+
+test("la liste des signaux du schéma suit celle de signaux.mjs", async () => {
+  const { SIGNAUX_SITE } = await import("../config/schema.ts");
+  const { SIGNAUX } = await import("../scripts/sourcing/signaux.mjs");
+  assert.deepEqual([...SIGNAUX_SITE], ["site_joignable", ...SIGNAUX]);
+});
+
+test("schéma : les nouveaux critères sont valides, une borne inversée ou un signal vide est refusé, une config sans eux reste valide", () => {
+  const avec = (c) => {
+    const n = niche();
+    n.score.criteres.push(c);
+    return analyserNiche(n);
+  };
+  assert.equal(analyserNiche(niche()).ok, true);
+  assert.equal(avec({ id: "ca", type: "chiffre_affaires", regle: { min: 1000 }, points: 5 }).ok, true);
+  assert.equal(avec({ id: "emp", type: "employeur", regle: {}, points: 5 }).ok, true);
+  assert.match(avec({ id: "ca2", type: "chiffre_affaires", regle: { min: 10, max: 5 }, points: 5 }).problemes.join(), /min doit être inférieur/);
+  assert.match(avec({ id: "s", type: "signal_site", regle: {}, points: 5 }).problemes.join(), /presents ou absents/);
+  assert.match(avec({ id: "s2", type: "signal_site", regle: { presents: ["pixel_meta"], absents: ["pixel_meta"] }, points: 5 }).problemes.join(), /à la fois/);
+  assert.equal(avec({ id: "s3", type: "signal_site", regle: { presents: ["inconnu"] }, points: 5 }).ok, false);
+});
+
+test("schéma : l'ancienne clé sources.maps est refusée avec un message qui dit de la renommer en sources.places", () => {
+  const n = niche();
+  n.sources.maps = n.sources.places;
+  delete n.sources.places;
+  const r = analyserNiche(n);
+  assert.equal(r.ok, false);
+  assert.match(r.problemes.join("\n"), /sources\.maps n'existe plus/);
+  assert.match(r.problemes.join("\n"), /Renomme la clé « maps » en « places »/);
 });

@@ -1,0 +1,248 @@
+{
+  "code": "garages-controle-technique",
+  "metier": "Garages indépendants et centres de contrôle technique",
+  "tailleVisee": "2 à 15 salariés",
+  "pourquoi": "Le patron est dans l'atelier ou à l'accueil : un appel court avec une question concrète passe. Ses clients sont locaux et reviennent chaque année, donc la visibilité de proximité fait directement entrer des clients.",
+  "cible": {
+    "description": "Garages indépendants d'entretien et de réparation automobile, et centres de contrôle technique indépendants, qui servent une clientèle de proximité.",
+    "metiers": [
+      "garage automobile",
+      "centre de contrôle technique",
+      "entretien et réparation de véhicules"
+    ],
+    "tailleMin": 2,
+    "tailleMax": 15,
+    "decideur": "gérant",
+    "exclusions": [
+      "Concessions et centres auto de réseau national",
+      "Entrepreneurs individuels sans salarié",
+      "Entreprises en liquidation ou en sommeil"
+    ]
+  },
+  "sources": {
+    "sirene": {
+      "naf": [
+        "45.20A",
+        "71.20A"
+      ],
+      "motsNomExclure": [
+        "holding"
+      ],
+      "exclureEI": true
+    },
+    "motsVidesAppariement": [
+      "sarl",
+      "sas",
+      "sasu",
+      "eurl",
+      "garage",
+      "garages",
+      "auto",
+      "automobile",
+      "automobiles",
+      "controle",
+      "contrôle",
+      "technique",
+      "et",
+      "de",
+      "des",
+      "du",
+      "la",
+      "le",
+      "les"
+    ],
+    "prefixesEmail": [
+      "contact",
+      "info",
+      "bonjour",
+      "garage",
+      "rdv"
+    ]
+  },
+  "google": {
+    "motsCles": [
+      "garage automobile",
+      "garage indépendant",
+      "contrôle technique",
+      "réparation automobile"
+    ]
+  },
+  "score": {
+    "criteres": [
+      {
+        "id": "societe",
+        "type": "forme_juridique",
+        "regle": {
+          "inclure": [
+            "5498",
+            "5499",
+            "5710",
+            "5720"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "taille",
+        "type": "effectif",
+        "regle": {
+          "min": 2,
+          "max": 15
+        },
+        "points": 20
+      },
+      {
+        "id": "installee",
+        "type": "anciennete",
+        "regle": {
+          "minAns": 3
+        },
+        "points": 15
+      },
+      {
+        "id": "naf_metier",
+        "type": "naf",
+        "regle": {
+          "inclure": [
+            "45.20A",
+            "71.20A"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "metier_dans_le_nom",
+        "type": "mot_nom",
+        "regle": {
+          "mots": [
+            "garage",
+            "auto",
+            "contr"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "avis",
+        "type": "note_google",
+        "regle": {
+          "min": 4,
+          "avisMin": 10
+        },
+        "points": 10
+      },
+      {
+        "id": "site",
+        "type": "a_site",
+        "regle": {},
+        "points": 5
+      },
+      {
+        "id": "email",
+        "type": "a_email",
+        "regle": {},
+        "points": 5
+      }
+    ],
+    "seuils": {
+      "A": 70,
+      "B": 45
+    },
+    "plafond": 100
+  },
+  "script": {
+    "questions": [
+      {
+        "id": "source_clients",
+        "texte": "Vos clients viennent surtout comment : habitués du quartier, passage, recherche sur internet, partenaires comme les assureurs ?",
+        "but": "Connaître la source actuelle des clients."
+      },
+      {
+        "id": "services_voulus",
+        "texte": "Quelles prestations aimeriez-vous vendre davantage : entretien, pneus, climatisation, contrôle technique, véhicules d'occasion ?",
+        "but": "Savoir quels services l'intéressent."
+      },
+      {
+        "id": "atelier",
+        "texte": "Votre atelier est plutôt plein, ou il reste de la place dans le planning que vous aimeriez remplir ?",
+        "but": "Mesurer le besoin de nouveaux clients."
+      },
+      {
+        "id": "concurrence",
+        "texte": "Face aux centres auto de réseau de votre secteur, qu'est-ce qui fait venir vos clients chez vous ?",
+        "but": "Comprendre son argument face aux réseaux."
+      }
+    ]
+  },
+  "objections": [
+    {
+      "code": "pas-le-temps",
+      "libelle": "Je n'ai pas le temps",
+      "reponse": "Je comprends, vous avez les mains dans le moteur. Je ne vous prends pas de temps maintenant : on cale un échange court à un moment calme de votre journée, plutôt en début de matinée ou en fin de journée ?",
+      "relance": "Je vous propose [deux créneaux] ; si aucun ne va, donnez-moi le vôtre."
+    },
+    {
+      "code": "atelier-plein",
+      "libelle": "Mon atelier est plein",
+      "reponse": "Tant mieux. Ce sont des travaux rentables ou beaucoup de petites interventions ? Beaucoup de garagistes aimeraient avoir plus de clients pour les prestations les plus intéressantes."
+    },
+    {
+      "code": "habitues",
+      "libelle": "Mes clients sont des habitués",
+      "reponse": "C'est la base d'un bon garage. Mais les habitués déménagent, et les nouveaux venus de votre ville cherchent un garage sur internet. Aimeriez-vous qu'ils tombent sur vous ?"
+    },
+    {
+      "code": "gere-lui-meme",
+      "libelle": "Je gère déjà ma page moi-même",
+      "reponse": "Très bien, vous connaissez donc le sujet. Qu'est-ce qui vous prend du temps, et qu'aimeriez-vous voir en mieux ? L'échange peut servir à comparer, sans rien changer à ce qui fonctionne."
+    },
+    {
+      "code": "envoyez-un-mail",
+      "libelle": "Envoyez-moi un mail",
+      "reponse": "Avec plaisir. Pour vous écrire quelque chose d'utile et pas une brochure de plus : quelle prestation voulez-vous vendre davantage ?",
+      "relance": "Et pour en parler de vive voix ensuite, je vous propose [deux créneaux]."
+    },
+    {
+      "code": "combien-ca-coute",
+      "libelle": "Combien ça coûte ?",
+      "reponse": "Ça dépend de votre zone et de ce que vous visez, et je ne veux pas vous donner un chiffre au hasard. C'est justement ce qu'on regarde ensemble pendant l'échange."
+    }
+  ],
+  "accroche": {
+    "exemples": [
+      "J'ai vu sur votre site que vous faites l'entretien toutes marques et le contrôle technique au même endroit : c'est un service que vous voulez mettre en avant ?",
+      "Votre page sur la climatisation et les pneus m'a intéressé : ce sont des prestations que vous aimeriez vendre davantage dans votre secteur ?",
+      "Je vois que vos clients peuvent prendre rendez-vous en ligne : c'est un service que vos clients utilisent déjà beaucoup au garage ?"
+    ],
+    "motsIndices": [
+      "entretien",
+      "toutes marques",
+      "contrôle technique",
+      "pneus",
+      "climatisation",
+      "vidange",
+      "freins",
+      "rendez-vous en ligne"
+    ]
+  },
+  "debrief": {
+    "champs": [
+      {
+        "id": "source_clients",
+        "question": "D'où viennent ses clients aujourd'hui ?"
+      },
+      {
+        "id": "services_voulus",
+        "question": "Quelles prestations veut-il vendre davantage ?"
+      },
+      {
+        "id": "atelier",
+        "question": "Son atelier est-il plein ou avec de la place ?"
+      },
+      {
+        "id": "frein_principal",
+        "question": "Qu'est-ce qui le freine le plus ?"
+      }
+    ]
+  }
+}

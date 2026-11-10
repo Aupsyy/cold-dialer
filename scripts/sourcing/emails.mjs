@@ -263,11 +263,11 @@ export async function lirePage(adresse, ctx, domaineSite) {
 }
 
 /**
- * L'e-mail public d'un site : { statut: "trouve", email, source } ou { statut } (aucun, robots, injoignable, pas_html,
- * redirige_ailleurs, hors_perimetre, site_illisible). ctx : { fetch, patienter, adresseSure, userAgent, jeton, prefixes, messageries,
- * robots (Map), compteurs, delaiMs }.
+ * Les pages utiles d'un site (l'accueil, puis au plus 3 pages contact, mentions légales, à propos) : { statut: "ok", domaineSite,
+ * pages: [{ url, html }] } ou { statut } (robots, injoignable, pas_html, redirige_ailleurs, hors_perimetre, site_illisible). Une seule
+ * lecture sert aux e-mails (chercherEmailSurSite) et aux signaux du site (enrichir.mjs).
  */
-export async function chercherEmailSurSite(site, ctx) {
+export async function lireSite(site, ctx) {
   const url = normaliserSite(site);
   if (!url) return { statut: "site_illisible" };
   const depart = new URL(url);
@@ -279,12 +279,49 @@ export async function chercherEmailSurSite(site, ctx) {
     const p = await lirePage(lien, ctx, domaineSite);
     if (p.statut === "ok") pages.push(p);
   }
-  const trouves = pages.flatMap((p) => extraireEmails(p.html, { domaineSite }).map((t) => ({ ...t, page: p.url })));
-  const choix = choisirEmail(trouves, { domaineSite, prefixes: ctx.prefixes, messageries: ctx.messageries });
-  return choix ? { statut: "trouve", email: choix.email, source: choix.page.slice(0, 500) } : { statut: "aucun" };
+  return { statut: "ok", domaineSite, pages };
 }
 
-async function enParallele(elements, n, fonction) {
+/** L'e-mail à garder parmi les pages lues par lireSite : { email, source } ou null. */
+export function emailDepuisPages(lecture, ctx) {
+  const trouves = lecture.pages.flatMap((p) => extraireEmails(p.html, { domaineSite: lecture.domaineSite }).map((t) => ({ ...t, page: p.url })));
+  const choix = choisirEmail(trouves, { domaineSite: lecture.domaineSite, prefixes: ctx.prefixes, messageries: ctx.messageries });
+  return choix ? { email: choix.email, source: choix.page.slice(0, 500) } : null;
+}
+
+/**
+ * L'e-mail public d'un site : { statut: "trouve", email, source } ou { statut } (aucun, robots, injoignable, pas_html,
+ * redirige_ailleurs, hors_perimetre, site_illisible). ctx : { fetch, patienter, adresseSure, userAgent, jeton, prefixes, messageries,
+ * robots (Map), compteurs, delaiMs }.
+ */
+export async function chercherEmailSurSite(site, ctx) {
+  const lecture = await lireSite(site, ctx);
+  if (lecture.statut !== "ok") return { statut: lecture.statut };
+  const choix = emailDepuisPages(lecture, ctx);
+  return choix ? { statut: "trouve", ...choix } : { statut: "aucun" };
+}
+
+/**
+ * Le contexte de lecture des sites (cadence d'une requête par seconde par domaine, contrôle des hôtes, robots.txt, identité du robot),
+ * le même pour emails.mjs et enrichir.mjs. dependances : { fetch, resoudre, attendre, horloge, delaiMs, messageries }.
+ */
+export function creerContexteSite(niche, compteurs, dependances = {}) {
+  return {
+    fetch: dependances.fetch ?? globalThis.fetch,
+    patienter: creerCadence(1000, { horloge: dependances.horloge, attendre: dependances.attendre ?? attendreVraiment }),
+    adresseSure: creerControleHotes(dependances.resoudre ? { resoudre: dependances.resoudre } : {}),
+    delaiMs: dependances.delaiMs ?? DELAI_MS,
+    userAgent: niche.marque.userAgent,
+    jeton: jetonRobot(niche.marque.userAgent),
+    prefixes: niche.sources.prefixesEmail,
+    messageries: dependances.messageries ?? DOMAINES_MESSAGERIE,
+    robots: new Map(),
+    compteurs,
+  };
+}
+
+/** Lit des éléments N à la fois (au plus `n` en même temps). */
+export async function enParallele(elements, n, fonction) {
   let suivant = 0;
   const travailleurs = Array.from({ length: Math.max(1, Math.min(n, elements.length)) }, async () => {
     while (suivant < elements.length) {
@@ -295,7 +332,7 @@ async function enParallele(elements, n, fonction) {
   await Promise.all(travailleurs);
 }
 
-const domaineDe = (site) => {
+export const domaineDe = (site) => {
   const url = normaliserSite(site);
   return url ? new URL(url).hostname.replace(/^www\./, "") : null;
 };
@@ -358,19 +395,7 @@ export async function executer({ niche, entree, sortie, dossier, limite = null, 
   const cheminCache = join(dossier, "cache", "emails.jsonl");
   const cache = essai ? new Map() : lireCache(cheminCache);
   if (!essai) mkdirSync(dirname(cheminCache), { recursive: true });
-  const attendre = dependances.attendre ?? attendreVraiment;
-  const ctx = {
-    fetch: dependances.fetch ?? globalThis.fetch,
-    patienter: creerCadence(1000, { horloge: dependances.horloge, attendre }),
-    adresseSure: creerControleHotes(dependances.resoudre ? { resoudre: dependances.resoudre } : {}),
-    delaiMs: dependances.delaiMs ?? DELAI_MS,
-    userAgent: niche.marque.userAgent,
-    jeton: jetonRobot(niche.marque.userAgent),
-    prefixes: niche.sources.prefixesEmail,
-    messageries: dependances.messageries ?? DOMAINES_MESSAGERIE,
-    robots: new Map(),
-    compteurs,
-  };
+  const ctx = creerContexteSite(niche, compteurs, dependances);
   const STATUTS = {
     aucun: "aucun",
     robots: "robots",

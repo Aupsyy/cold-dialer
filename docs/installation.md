@@ -105,7 +105,7 @@ RGPD de l'écran Réglages et à l'effacement des appels d'une fiche (bouton « 
 | `cible` | métiers, taille, décideur, exclusions | `docs/sourcing.md` |
 | `script`, `objections` | ton, ouvertures, questions, pitch, close, messagerie, crochets ; objections et réponses | |
 | `issues`, `tentativesMax` | les issues du Poste (les 8 du socle et tes ajouts), le nombre de tentatives | |
-| `score`, `sources` | la grille de score, les codes NAF, départements, Maps, mots du métier | `docs/sourcing.md` |
+| `score`, `sources` | la grille de score, les codes NAF, départements, Google Places, mots du métier | `docs/sourcing.md` |
 | `accroche`, `debrief` | mots indices et interdits, exemples d'accroche ; champs de découverte du débrief | `docs/accroches.md`, `docs/debrief.md` |
 | `telephonie`, `agenda` | l'outil d'appel et son mode, l'enregistrement ; l'outil d'agenda et le lien public de réservation | `docs/telephonie.md`, `docs/agenda.md` |
 | `legal` | responsable, e-mail RGPD public, annonce d'enregistrement, phrases d'opposition et d'origine, conservation | `docs/legal.md` |
@@ -318,7 +318,7 @@ déjà de vraies fiches, ou sans équipe (`--forcer` passe outre). Pour retirer 
 
 ## 9. Le premier import
 
-Le parcours complet, avec ou sans Google Maps, avec ton propre fichier, et hors de France : `docs/sourcing.md`. Le plus court, en France :
+Le parcours complet, avec ou sans Google, avec ton propre fichier, et hors de France : `docs/sourcing.md`. Le plus court, en France :
 
 ```bash
 node scripts/sourcing/sirene.mjs fetch --essai                               # le volume annoncé, rien n'est gardé

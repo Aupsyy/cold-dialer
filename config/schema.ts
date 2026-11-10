@@ -74,7 +74,16 @@ export const TYPES_CRITERE_SCORE = [
   "note_google",
   "a_site",
   "a_email",
+  "chiffre_affaires",
+  "employeur",
+  "signal_site",
 ] as const;
+
+/**
+ * Les signaux publics d'un site que enrichir.mjs écrit (colonnes site_joignable et signaux_site) et que le critère signal_site lit.
+ * La même liste que SIGNAUX de scripts/sourcing/signaux.mjs, plus « site_joignable » (un test les garde alignées).
+ */
+export const SIGNAUX_SITE = ["site_joignable", "pixel_meta", "balise_google_ads", "prise_rdv", "agence_creditee"] as const;
 
 /** Indicatif attendu pour les pays connus (les autres pays sont libres). */
 export const INDICATIFS_CONNUS: Readonly<Record<string, string>> = { FR: "+33", BE: "+32", CH: "+41", CA: "+1", LU: "+352", MC: "+377" };
@@ -113,6 +122,18 @@ const critereScore = z.discriminatedUnion("type", [
   critere("note_google", z.strictObject({ min: z.number().min(0).max(5), avisMin: z.number().int().min(0).optional() })),
   critere("a_site", z.strictObject({})),
   critere("a_email", z.strictObject({})),
+  /** Le chiffre d'affaires publié au registre (en euros, dernier exercice connu) : écrit par enrichir.mjs. Sans donnée : ni gain ni perte. */
+  critere("chiffre_affaires", z.strictObject({ min: z.number().int().min(0).optional(), max: z.number().int().min(0).optional() })),
+  /** L'entreprise emploie (ou non) des salariés d'après le registre : valeur vaut true par défaut. Sans donnée : ni gain ni perte. */
+  critere("employeur", z.strictObject({ valeur: z.boolean().optional() })),
+  /**
+   * Des signaux du site de l'entreprise : presents (tous doivent être vus) et absents (aucun ne doit être vu ; ne compte que si le site a
+   * été lu). Un site non lu ne gagne ni ne perd de points.
+   */
+  critere(
+    "signal_site",
+    z.strictObject({ presents: z.array(z.enum(SIGNAUX_SITE)).max(5).optional(), absents: z.array(z.enum(SIGNAUX_SITE)).max(5).optional() }),
+  ),
 ]);
 
 // ---------------------------------------------------------------------------------------------------------------------------------
@@ -228,8 +249,8 @@ const objetNiche = z.strictObject({
         etatAdministratif: z.literal("A"),
       })
       .optional(),
-    /** Livré désactivé (risque au regard des conditions de Google) : voir docs/sourcing.md. */
-    maps: z
+    /** Google par l'API officielle Places (New) : livré désactivé (clé, quota et facturation de l'équipe) ; voir docs/sourcing.md. */
+    places: z
       .strictObject({
         actif: z.boolean(),
         motsCles: textes(20, 80),
@@ -237,6 +258,8 @@ const objetNiche = z.strictObject({
         max: z.number().int().min(1).max(2000),
       })
       .optional(),
+    /** Ancien nom de sources.places (le robot Google Maps a été retiré) : refusé avec un message qui dit quoi renommer. */
+    maps: z.unknown().optional(),
     motsVidesAppariement: textes(100, 40),
     prefixesEmail: z.array(z.string().regex(/^[a-z0-9._-]{1,30}$/, "début d'adresse en minuscules (ex. contact)")).max(30),
   }),
@@ -351,6 +374,26 @@ function verifierCoherence(n: ObjetNiche, ctx: Contexte): void {
     }
     if (c.type === "anciennete" && c.regle.minAns !== undefined && c.regle.maxAns !== undefined && c.regle.minAns > c.regle.maxAns) {
       signaler(ctx, ["score", "criteres", i, "regle"], "anciennete : minAns doit être inférieur ou égal à maxAns");
+    }
+  });
+
+  if (n.sources.maps !== undefined) {
+    signaler(
+      ctx,
+      ["sources", "maps"],
+      "sources.maps n'existe plus : Google se lit maintenant par l'API officielle Places. Renomme la clé « maps » en « places » (mêmes champs : actif, motsCles, villes, max) et lis docs/sourcing.md, « Google (API officielle Places) »",
+    );
+  }
+  n.score.criteres.forEach((c, i) => {
+    if (c.type === "chiffre_affaires" && c.regle.min !== undefined && c.regle.max !== undefined && c.regle.min > c.regle.max) {
+      signaler(ctx, ["score", "criteres", i, "regle"], "chiffre_affaires : min doit être inférieur ou égal à max");
+    }
+    if (c.type === "signal_site") {
+      const { presents = [], absents = [] } = c.regle;
+      if (presents.length === 0 && absents.length === 0) signaler(ctx, ["score", "criteres", i, "regle"], "signal_site : il faut une liste presents ou absents");
+      for (const s of presents) {
+        if (absents.includes(s)) signaler(ctx, ["score", "criteres", i, "regle"], `signal_site : ${s} ne peut pas être à la fois dans presents et absents`);
+      }
     }
   });
 

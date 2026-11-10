@@ -1,0 +1,250 @@
+{
+  "code": "menuisiers-agenceurs",
+  "metier": "Menuisiers et agenceurs",
+  "tailleVisee": "2 à 20 salariés",
+  "pourquoi": "Le dirigeant est le plus souvent artisan et commercial : il décroche, parle de ses réalisations avec plaisir. Les projets sur mesure ont un panier suffisant et leur qualité se voit en photos sur le site.",
+  "cible": {
+    "description": "Menuiseries et agencements sur mesure (intérieur, commerces, escaliers, dressings), avec atelier, pour particuliers et professionnels.",
+    "metiers": [
+      "menuisier",
+      "agenceur",
+      "menuiserie sur mesure",
+      "agencement intérieur"
+    ],
+    "tailleMin": 2,
+    "tailleMax": 20,
+    "decideur": "gérant",
+    "exclusions": [
+      "Poseurs de fenêtres en réseau de franchise",
+      "Fabricants industriels",
+      "Entreprises en liquidation ou en sommeil"
+    ]
+  },
+  "sources": {
+    "sirene": {
+      "naf": [
+        "43.32A",
+        "43.32C",
+        "16.23Z"
+      ],
+      "motsNomExclure": [
+        "holding"
+      ],
+      "exclureEI": true
+    },
+    "motsVidesAppariement": [
+      "sarl",
+      "sas",
+      "sasu",
+      "eurl",
+      "menuiserie",
+      "menuiseries",
+      "menuisier",
+      "agencement",
+      "agencements",
+      "bois",
+      "et",
+      "de",
+      "des",
+      "du",
+      "la",
+      "le",
+      "les"
+    ],
+    "prefixesEmail": [
+      "contact",
+      "info",
+      "bonjour",
+      "devis",
+      "atelier"
+    ]
+  },
+  "google": {
+    "motsCles": [
+      "menuisier agenceur",
+      "menuiserie sur mesure",
+      "agencement sur mesure",
+      "fabricant d'escaliers"
+    ]
+  },
+  "score": {
+    "criteres": [
+      {
+        "id": "societe",
+        "type": "forme_juridique",
+        "regle": {
+          "inclure": [
+            "5498",
+            "5499",
+            "5710",
+            "5720"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "taille",
+        "type": "effectif",
+        "regle": {
+          "min": 2,
+          "max": 20
+        },
+        "points": 25
+      },
+      {
+        "id": "installee",
+        "type": "anciennete",
+        "regle": {
+          "minAns": 3
+        },
+        "points": 15
+      },
+      {
+        "id": "naf_metier",
+        "type": "naf",
+        "regle": {
+          "inclure": [
+            "43.32A",
+            "43.32C",
+            "16.23Z"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "metier_dans_le_nom",
+        "type": "mot_nom",
+        "regle": {
+          "mots": [
+            "menuis",
+            "agenc",
+            "bois"
+          ]
+        },
+        "points": 10
+      },
+      {
+        "id": "avis",
+        "type": "note_google",
+        "regle": {
+          "min": 4,
+          "avisMin": 10
+        },
+        "points": 10
+      },
+      {
+        "id": "site",
+        "type": "a_site",
+        "regle": {},
+        "points": 5
+      },
+      {
+        "id": "email",
+        "type": "a_email",
+        "regle": {},
+        "points": 5
+      }
+    ],
+    "seuils": {
+      "A": 70,
+      "B": 45
+    },
+    "plafond": 100
+  },
+  "script": {
+    "questions": [
+      {
+        "id": "source_projets",
+        "texte": "Vos projets sur mesure arrivent surtout comment : bouche-à-oreille, maîtres d'œuvre, plateformes, recherche sur internet ?",
+        "but": "Connaître la source actuelle des projets."
+      },
+      {
+        "id": "type_projets",
+        "texte": "Vous travaillez plutôt pour des particuliers, pour des commerces et professionnels, ou les deux ?",
+        "but": "Situer sa clientèle."
+      },
+      {
+        "id": "projets_voulus",
+        "texte": "Quels projets aimeriez-vous faire davantage : cuisines, dressings, escaliers, agencements de magasins ?",
+        "but": "Savoir quels projets l'intéressent."
+      },
+      {
+        "id": "capacite_atelier",
+        "texte": "Si les demandes sérieuses étaient plus nombreuses, votre atelier pourrait absorber plus de projets ?",
+        "but": "Vérifier la capacité de l'atelier."
+      }
+    ]
+  },
+  "objections": [
+    {
+      "code": "pas-le-temps",
+      "libelle": "Je n'ai pas le temps",
+      "reponse": "Je comprends, vous êtes à l'atelier ou chez un client. Je ne vous prends pas de temps maintenant : on cale un échange court à l'heure qui vous arrange ?",
+      "relance": "Je vous propose [deux créneaux] ; si aucun ne va, donnez-moi le vôtre."
+    },
+    {
+      "code": "carnet-plein",
+      "libelle": "J'ai du travail pour des mois",
+      "reponse": "Très bien, c'est un bon signe. La question est plutôt de choisir les projets que vous préférez fabriquer. Il vous arrive d'en refuser parce qu'ils ne vous correspondent pas ?"
+    },
+    {
+      "code": "bouche-a-oreille",
+      "libelle": "Je marche au bouche-à-oreille",
+      "reponse": "C'est la meilleure des recommandations. Elle part pourtant des chantiers livrés. Aimeriez-vous aussi que ceux qui cherchent un menuisier sur mesure dans votre zone tombent sur vos réalisations ?"
+    },
+    {
+      "code": "deja-une-agence",
+      "libelle": "J'ai déjà quelqu'un pour mon site",
+      "reponse": "Très bien. Qu'est-ce qui fonctionne dans ce qu'il fait, et qu'aimeriez-vous voir en plus ? L'échange peut servir de point de comparaison, sans rien changer à ce qui marche."
+    },
+    {
+      "code": "envoyez-un-mail",
+      "libelle": "Envoyez-moi un mail",
+      "reponse": "Avec plaisir. Pour écrire quelque chose d'utile et pas une brochure : quel type de projet voulez-vous développer en priorité ?",
+      "relance": "Et pour en parler de vive voix ensuite, je vous propose [deux créneaux]."
+    },
+    {
+      "code": "combien-ca-coute",
+      "libelle": "Combien ça coûte ?",
+      "reponse": "Ça dépend de votre zone et des projets visés, et je ne veux pas vous donner un chiffre au hasard. C'est justement ce qu'on regarde ensemble pendant l'échange."
+    }
+  ],
+  "accroche": {
+    "exemples": [
+      "J'ai vu sur votre site la bibliothèque sur mesure avec échelle intégrée que vous avez fabriquée : ce sont les projets que vous voulez faire plus souvent ?",
+      "Vos escaliers en chêne massif m'ont arrêté : c'est ce type de réalisation que vous cherchez à développer dans votre secteur aujourd'hui ?",
+      "Je vois que vous faites aussi l'agencement de commerces en plus des meubles pour particuliers : c'est une clientèle que vous voulez développer ?"
+    ],
+    "motsIndices": [
+      "escalier",
+      "dressing",
+      "bibliothèque",
+      "cuisine",
+      "chêne",
+      "sur mesure",
+      "atelier",
+      "agencement",
+      "placard"
+    ]
+  },
+  "debrief": {
+    "champs": [
+      {
+        "id": "source_projets",
+        "question": "D'où viennent ses projets aujourd'hui ?"
+      },
+      {
+        "id": "clientele",
+        "question": "Particuliers, professionnels, ou les deux ?"
+      },
+      {
+        "id": "projets_voulus",
+        "question": "Quels projets veut-il faire davantage ?"
+      },
+      {
+        "id": "frein_principal",
+        "question": "Qu'est-ce qui le freine le plus ?"
+      }
+    ]
+  }
+}

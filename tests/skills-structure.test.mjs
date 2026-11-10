@@ -16,7 +16,7 @@ import { fileURLToPath } from "node:url";
 const RACINE = fileURLToPath(new URL("../", import.meta.url));
 const lire = (chemin) => readFileSync(join(RACINE, chemin), "utf8");
 
-export const SKILLS = ["installer", "sourcer-leads", "accroches", "debrief", "ajuster-script"];
+export const SKILLS = ["demarrer", "choisir-niche", "construire-offre", "installer", "sourcer-leads", "accroches", "debrief", "ajuster-script"];
 export const SECTIONS = ["But", "Entrées", "Étapes", "Garde-fous", "Sortie", "Pièges connus"];
 /** Les fichiers dont les commandes sont vérifiées, en plus des SKILL.md. */
 const DOCS = ["skills/README.md", "README.md", "README.en.md", "docs/installation.md", "docs/legal.md", "CONTRIBUTING.md", "SECURITY.md"];
@@ -34,7 +34,6 @@ export const OPTIONS_EXTERNES = new Set([
   "--clone", // gh repo create --clone
   "--project-ref", // supabase link --project-ref
   "--env-file", // node --env-file=…
-  "--no-save", // npm install --no-save (docs/sourcing.md, Playwright)
 ]);
 
 const OUTILS_EXTERNES = /^(?:vercel|gh|supabase|npm|npx|git|rm|ln|cd|cp|mv|mkdir|ls|read|unset|export|curl|open|cat|echo|printf|brew|pbcopy|claude)\b/;
@@ -139,7 +138,7 @@ const fichiersVerifies = () => [...SKILLS.map((s) => `skills/${s}/SKILL.md`), ..
 /** Les options de tous les scripts lançables du dépôt (scripts/<dossier>/<script>.mjs). */
 function optionsDeTousLesScripts() {
   const toutes = new Set();
-  for (const dossier of ["sourcing", "accroches", "debrief", "install"]) {
+  for (const dossier of ["sourcing", "accroches", "debrief", "install", "niche"]) {
     for (const nom of readdirSync(join(RACINE, "scripts", dossier))) {
       if (nom.endsWith(".mjs")) for (const o of optionsAcceptees(`scripts/${dossier}/${nom}`)) toutes.add(o);
     }
@@ -147,7 +146,7 @@ function optionsDeTousLesScripts() {
   return toutes;
 }
 
-test("les cinq skills et skills/README.md sont là ; le README des skills dit comment les lier, sans clé", () => {
+test("les skills et skills/README.md sont là ; le README des skills dit comment les lier, sans clé", () => {
   for (const s of SKILLS) assert.ok(existsSync(join(RACINE, "skills", s, "SKILL.md")), `skills/${s}/SKILL.md manquant`);
   const presents = readdirSync(join(RACINE, "skills"), { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name);
   assert.deepEqual(presents.sort(), [...SKILLS].sort(), "un dossier de skills en trop ou en moins");

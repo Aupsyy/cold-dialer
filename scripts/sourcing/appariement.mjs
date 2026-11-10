@@ -1,4 +1,4 @@
-// Le rapprochement de fiches (Google Maps, ou toute liste de contacts : nom, ville, code postal, téléphone, site) avec les
+// Le rapprochement de fiches (Google Places, ou toute liste de contacts : nom, ville, code postal, téléphone, site) avec les
 // entreprises de la base (SIRENE ou CSV). Règle : jamais un mauvais téléphone plutôt que pas de téléphone.
 //
 // Les noms sont comparés sur leurs mots distinctifs : accents, casse et ponctuation retirés, formes juridiques (SARL, SAS…), petits
@@ -13,7 +13,7 @@
 //
 // Usage : node scripts/sourcing/appariement.mjs <base.csv> <fiches.csv> [--sortie <fichier.csv>] [--essai] [--config <niche.json>]
 //   base.csv    la base : sirene.mjs build, ou un CSV au format d'import (docs/sourcing.md) ;
-//   fiches.csv  les fiches : maps.mjs, ou un annuaire au même format (entreprise, ville, code_postal, telephone, site, source…).
+//   fiches.csv  les fiches : places.mjs, ou un annuaire au même format (entreprise, ville, code_postal, telephone, site, source…).
 //   Écrit <base>-apparie.csv : le téléphone, le site, la note et le nombre d'avis s'ajoutent quand la base ne les a pas (jamais
 //   remplacés), avec la provenance (coordonnees_source, coordonnees_url, coordonnees_date, coordonnees_fiabilite) et la liste des
 //   champs qu'elle couvre (coordonnees_champs). RGPD : rien n'entre sans sa source DATÉE. Une fiche sans date de lecture (colonne

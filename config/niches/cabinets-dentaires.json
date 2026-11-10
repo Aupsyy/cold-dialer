@@ -1,0 +1,249 @@
+{
+  "code": "cabinets-dentaires",
+  "metier": "Cabinets dentaires",
+  "tailleVisee": "2 à 20 salariés",
+  "pourquoi": "Le chirurgien-dentiste titulaire dirige son cabinet et son équipe, donc décide seul. Ses patients choisissent souvent après une recherche locale. L'accès passe par l'assistante : l'appel doit être court, poli et préparé.",
+  "cible": {
+    "description": "Cabinets dentaires et centres de soins dentaires indépendants avec plusieurs fauteuils, dirigés par un praticien titulaire.",
+    "metiers": [
+      "cabinet dentaire",
+      "chirurgien-dentiste",
+      "centre dentaire"
+    ],
+    "tailleMin": 2,
+    "tailleMax": 20,
+    "decideur": "chirurgien-dentiste titulaire",
+    "exclusions": [
+      "Centres de santé mutualistes et réseaux nationaux",
+      "Praticiens remplaçants sans cabinet propre",
+      "Cabinets fermés ou en cessation d'activité"
+    ]
+  },
+  "sources": {
+    "sirene": {
+      "naf": [
+        "86.23Z"
+      ],
+      "motsNomExclure": [
+        "holding",
+        "mutuelle"
+      ],
+      "exclureEI": false
+    },
+    "motsVidesAppariement": [
+      "sarl",
+      "sas",
+      "sasu",
+      "selarl",
+      "selas",
+      "scp",
+      "cabinet",
+      "dentaire",
+      "dentaires",
+      "dentiste",
+      "dr",
+      "docteur",
+      "et",
+      "de",
+      "des",
+      "du",
+      "la",
+      "le",
+      "les"
+    ],
+    "prefixesEmail": [
+      "contact",
+      "info",
+      "bonjour",
+      "cabinet",
+      "accueil"
+    ]
+  },
+  "google": {
+    "motsCles": [
+      "cabinet dentaire",
+      "chirurgien-dentiste",
+      "dentiste",
+      "centre dentaire"
+    ]
+  },
+  "score": {
+    "criteres": [
+      {
+        "id": "societe",
+        "type": "forme_juridique",
+        "regle": {
+          "inclure": [
+            "5485",
+            "5785",
+            "5498",
+            "5499",
+            "5710",
+            "5720"
+          ]
+        },
+        "points": 10
+      },
+      {
+        "id": "taille",
+        "type": "effectif",
+        "regle": {
+          "min": 2,
+          "max": 20
+        },
+        "points": 20
+      },
+      {
+        "id": "installee",
+        "type": "anciennete",
+        "regle": {
+          "minAns": 3
+        },
+        "points": 10
+      },
+      {
+        "id": "naf_metier",
+        "type": "naf",
+        "regle": {
+          "inclure": [
+            "86.23Z"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "metier_dans_le_nom",
+        "type": "mot_nom",
+        "regle": {
+          "mots": [
+            "dent",
+            "stomat",
+            "orthodon"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "avis",
+        "type": "note_google",
+        "regle": {
+          "min": 4,
+          "avisMin": 10
+        },
+        "points": 15
+      },
+      {
+        "id": "site",
+        "type": "a_site",
+        "regle": {},
+        "points": 10
+      },
+      {
+        "id": "email",
+        "type": "a_email",
+        "regle": {},
+        "points": 5
+      }
+    ],
+    "seuils": {
+      "A": 70,
+      "B": 45
+    },
+    "plafond": 100
+  },
+  "script": {
+    "questions": [
+      {
+        "id": "source_patients",
+        "texte": "Vos nouveaux patients viennent surtout comment : recommandations, recherche sur internet, praticiens correspondants ?",
+        "but": "Connaître la source actuelle des patients."
+      },
+      {
+        "id": "soins_voulus",
+        "texte": "Quels types de soins aimeriez-vous proposer davantage : prothèses, implants, orthodontie, soins de prévention ?",
+        "but": "Savoir quels actes l'intéressent."
+      },
+      {
+        "id": "agenda",
+        "texte": "Votre agenda est plutôt plein, ou il reste des plages que vous aimeriez remplir ?",
+        "but": "Mesurer le besoin de nouveaux patients."
+      },
+      {
+        "id": "equipe",
+        "texte": "Vous êtes seul praticien ou plusieurs dans le cabinet ? Qui prend les décisions d'organisation ?",
+        "but": "Identifier le vrai décideur."
+      }
+    ]
+  },
+  "objections": [
+    {
+      "code": "pas-le-temps",
+      "libelle": "Je n'ai pas le temps",
+      "reponse": "Je comprends, entre deux patients, votre temps est compté. Je ne vous prends pas de temps maintenant : on cale un échange court au moment où le cabinet est calme, plutôt en début de matinée ou en fin de journée ?",
+      "relance": "Je vous propose [deux créneaux] ; si aucun ne va, donnez-moi le vôtre."
+    },
+    {
+      "code": "agenda-plein",
+      "libelle": "Mon agenda est plein",
+      "reponse": "C'est une bonne situation. Les patients que vous recevez sont ceux que vous aimeriez le plus voir, ou voudriez-vous davantage de certains soins ?"
+    },
+    {
+      "code": "recommandations-suffisent",
+      "libelle": "Mes patients viennent par recommandation",
+      "reponse": "C'est la plus belle des confiances. Mais un nouvel habitant de votre ville, lui, cherche sur internet. Savez-vous ce qu'il trouve en tapant le nom de votre quartier ?"
+    },
+    {
+      "code": "deja-un-prestataire",
+      "libelle": "Je travaille déjà avec quelqu'un",
+      "reponse": "Très bien. Qu'est-ce qui vous plaît dans ce qu'il fait, et qu'aimeriez-vous voir en plus ? L'échange peut servir de point de comparaison, sans rien changer à ce qui fonctionne."
+    },
+    {
+      "code": "deontologie",
+      "libelle": "Ce n'est pas notre façon de faire dans la santé",
+      "reponse": "Vous avez raison d'y être attentif : un cabinet n'a pas à faire de publicité tapageuse. L'échange porte seulement sur la visibilité de votre cabinet et l'information du patient, dans le respect de votre déontologie."
+    },
+    {
+      "code": "envoyez-un-mail",
+      "libelle": "Envoyez-moi un mail",
+      "reponse": "Avec plaisir. Pour vous écrire quelque chose d'utile et pas une brochure de plus : quels soins voulez-vous faire connaître en priorité ?",
+      "relance": "Et pour en parler de vive voix ensuite, je vous propose [deux créneaux]."
+    }
+  ],
+  "accroche": {
+    "exemples": [
+      "J'ai vu sur votre site la présentation de votre équipe et de vos soins d'implantologie : c'est une activité que vous voulez faire connaître davantage ?",
+      "Votre page sur les soins de prévention et le suivi des enfants m'a intéressé : c'est une patientèle que vous aimeriez accueillir plus souvent ?",
+      "Je vois que votre cabinet propose la prise de rendez-vous en ligne : c'est un service que vos patients utilisent beaucoup aujourd'hui ?"
+    ],
+    "motsIndices": [
+      "implants",
+      "prothèses",
+      "orthodontie",
+      "prévention",
+      "urgences",
+      "rendez-vous en ligne",
+      "enfants",
+      "blanchiment"
+    ]
+  },
+  "debrief": {
+    "champs": [
+      {
+        "id": "source_patients",
+        "question": "D'où viennent ses nouveaux patients aujourd'hui ?"
+      },
+      {
+        "id": "soins_voulus",
+        "question": "Quels soins veut-il développer ?"
+      },
+      {
+        "id": "agenda",
+        "question": "Où en est son agenda : plein ou avec des plages libres ?"
+      },
+      {
+        "id": "frein_principal",
+        "question": "Qu'est-ce qui le freine le plus ?"
+      }
+    ]
+  }
+}

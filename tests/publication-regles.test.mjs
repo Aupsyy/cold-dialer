@@ -71,10 +71,10 @@ test("termes interdits : vus dans une ligne et dans un chemin, par numéro seule
 });
 
 test("chemins : données, audio, archives, exports et JSON hors configuration refusés ; images et sources permises", () => {
-  for (const f of ["donnees/x.csv", "a/b.jsonl", "audio/appel.mp3", "x.pdf", "x.zip", "contacts.vcf", "export.xlsx", "tests/fixture.json", ".env.local"]) {
+  for (const f of ["donnees/x.csv", "a/b.jsonl", "audio/appel.mp3", "x.pdf", "x.zip", "contacts.vcf", "export.xlsx", "tests/fixture.json", "config/niches/sous/dossier.json", "config/niches/Majuscule.json", ".env.local"]) {
     assert.ok(problemesDeChemin(f, null).length > 0, f);
   }
-  for (const f of ["app/icon.svg", "docs/capture.png", "lib/x.ts", "config/niche.json", "package.json", ".env.example"]) {
+  for (const f of ["app/icon.svg", "docs/capture.png", "lib/x.ts", "config/niche.json", "config/niches/paysagistes.json", "package.json", ".env.example"]) {
     assert.deepEqual(problemesDeChemin(f, null), [], f);
   }
 });

@@ -35,7 +35,7 @@ de `config/niche.json` elles iront. Ne recopie jamais l'exemple tel quel : il mo
 - Le nom de l'équipe, dit au téléphone (`marque.nomEquipe`, le crochet `[équipe]`) ; le nom affiché de l'outil (`marque.nomProduit`,
   « Poste d'appels » par défaut) ; une couleur `#RRGGBB` (facultative).
 - Le pays : FR, BE, CH, CA ou autre (`pays.code`, `pays.indicatif` : +33, +32, +41, +1 ; `pays.fuseau` : Europe/Paris, Europe/Brussels,
-  Europe/Zurich, America/Toronto ; `pays.langue` reste « fr »). Hors de France, le registre SIRENE ne sert pas : un CSV, ou Maps.
+  Europe/Zurich, America/Toronto ; `pays.langue` reste « fr »). Hors de France, le registre SIRENE ne sert pas : un CSV, ou l'API Google Places.
 - Seul ou en équipe : combien d'appelants (chacun recevra une invitation, étape 3.8).
 - Une page web qui présente le robot qui lira les sites des prospects, pour `marque.userAgent` (« NomBot/1.0 (+https://…) »).
 - Exemple : « Atelier Démo », « Poste d'appels », FR, Europe/Paris, deux appelants, `AtelierDemoBot/1.0 (+https://example.org/robot)`.
@@ -61,8 +61,9 @@ de `config/niche.json` elles iront. Ne recopie jamais l'exemple tel quel : il mo
 - Les codes NAF : tu les PROPOSES à partir du métier, l'utilisateur les valide sur la nomenclature de l'INSEE (`sources.sirene.naf`). Les
   départements, ou « tous » (`sources.sirene.departements`) ; les entrepreneurs individuels gardés ou non (`sources.sirene.exclureEI`) ;
   des mots du nom à inclure ou exclure.
-- Google Maps : non par défaut (`sources.maps.actif: false`). Explique le risque avant toute réponse : lire Maps avec un robot va contre
-  les conditions de Google (captchas, adresse bloquée, compte suspendu) ; c'est le choix de l'équipe (`docs/sourcing.md`).
+- Google : non par défaut (`sources.places.actif: false`). C'est l'API officielle Places, avec une clé que l'équipe crée elle-même
+  sur son compte Google Cloud (facturation à son nom, quota et alerte de budget à régler) : `docs/sourcing.md`, section Google.
+  Jamais de lecture de Google Maps par un robot.
 - Ou bien « j'ai déjà un CSV » (Belgique, Suisse, Canada, un annuaire, un export de CRM) : son format est dans `docs/sourcing.md`.
 - Tu en tires aussi, et tu les montres : la grille de score (`score`, les types de critères de `docs/sourcing.md`, seuils A et B), les
   mots du métier (`sources.motsVidesAppariement`, `accroche.motsIndices`, `accroche.interdits`), les débuts d'e-mail préférés
@@ -70,7 +71,7 @@ de `config/niche.json` elles iront. Ne recopie jamais l'exemple tel quel : il mo
   `objection`, `objection_texte`, `interet`, `decideur_joint`, `douleurs`, `croyances`, `citations`, `prochaine_etape` ni `tags`).
 - Exemple : métiers « auto-école », « école de conduite » ; de 1 à 20 salariés ; décideur « gérant » ; exclusions « Réseaux franchisés
   nationaux », « Entreprises en liquidation ou en sommeil » ; NAF proposé 85.53Z (enseignement de la conduite), à valider ;
-  départements 31, 81 et 82 ; pas de Maps ; champs du débrief `source_eleves`, `outil_planning`, `frein_principal`.
+  départements 31, 81 et 82 ; pas de Google ; champs du débrief `source_eleves`, `outil_planning`, `frein_principal`.
 
 **Série 4 : le script.**
 - Le ton (`script.ton`) : `direct_sec` (direct et sobre), `curiosite_doux` (curieux et doux), `expert_pose` (posé, quelqu'un qui connaît
@@ -82,7 +83,7 @@ de `config/niche.json` elles iront. Ne recopie jamais l'exemple tel quel : il mo
   trois exemples d'accroche fictifs qui donnent le ton (`accroche.exemples` : de 15 à 30 mots, `accroche.longueurMax` caractères au plus).
 - La réponse à « Comment avez-vous mon numéro ? » (`script.ouverture.commentAvezVousMonNumero`) : celle de l'exemple vaut pour le
   parcours par défaut (le registre public des entreprises, puis le site de l'entreprise). Adapte cette phrase et `legal.phraseSource`
-  aux sources réellement utilisées (un annuaire, son propre fichier, Maps s'il l'active) : elles sont dites au prospect.
+  aux sources réellement utilisées (un annuaire, son propre fichier, Google s'il l'active) : elles sont dites au prospect.
 - Crochets que le Poste remplit : `[prénom]`, `[nom]`, `[entreprise]`, `[ville]`, `[métier]`, `[ton prénom]`, `[équipe]`,
   `[deux créneaux]` ; chacun de ceux utilisés est déclaré dans `script.crochets`.
 - Puis les issues (`issues`) : les 8 du socle (`pas_repondu`, `messagerie`, `standard`, `a_rappeler` avec `exigeRappel: true`,
@@ -124,7 +125,7 @@ de `config/niche.json` elles iront. Ne recopie jamais l'exemple tel quel : il mo
   e-mail permis dans la config) ; la durée de conservation des fiches sans contact (`legal.conservationMois`, 36 au plus).
 - La phrase d'origine des coordonnées (`legal.phraseSource`), par défaut « Vos coordonnées professionnelles viennent de sources
   publiques : le registre public des entreprises et le site internet de votre entreprise. » : elle doit rester VRAIE pour les sources
-  réellement utilisées, comme la réponse du script à « Comment avez-vous mon numéro ? » (un annuaire, un fichier, Maps : adapter les
+  réellement utilisées, comme la réponse du script à « Comment avez-vous mon numéro ? » (un annuaire, un fichier, Google : adapter les
   deux).
 - L'annonce d'enregistrement (`legal.annonceEnregistrement`), par défaut « Je vous préviens que cet appel est enregistré pour le suivi de
   notre échange. Vous pouvez me demander d'arrêter l'enregistrement à tout moment. »
@@ -227,7 +228,7 @@ plusieurs jours).
   skill `sourcer-leads`.
 - Aucune promesse de résultat dans la config ; jamais un garde-fou, le schéma ou un test modifié pour faire passer `npm test`.
 - Rien n'est envoyé à un prospect : ni appel automatique, ni SMS, ni e-mail. Les liens d'invitation vont à l'équipe, par l'utilisateur.
-- Sources publiques seulement, jamais LinkedIn ; Maps reste désactivé tant que l'utilisateur n'a pas choisi, en connaissance du risque.
+- Sources publiques seulement, jamais LinkedIn ; Google reste désactivé tant que l'utilisateur n'a pas créé sa clé et choisi de l'activer.
 - Hébergement dans l'Union européenne : le projet Supabase en région Paris (eu-west-3), les fonctions Vercel à Paris (`vercel.json`) ;
   c'est le choix des régions qui garde les données dans l'UE.
 - Le dépôt créé reste PRIVÉ ; tu ne pousses que sur le dépôt de l'utilisateur, à sa demande, et jamais un fichier de `donnees/`.

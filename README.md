@@ -12,6 +12,15 @@ leur site ; en aval, le débrief de l'appel et les retours du marché. Next.js 1
 
 ## Démarrer
 
+**Tu débutes ?** Copie le modèle (étape 1), ouvre ton dépôt dans Claude Code et colle ceci :
+
+```text
+Lis skills/demarrer/SKILL.md et suis-le avec moi, une question à la fois : je débute dans la prospection téléphonique.
+```
+
+Il t'emmène dans l'ordre : ta niche (dix niches prêtes ou la tienne), ton offre, ton script, l'installation, les entreprises à
+appeler, puis ton premier bloc d'appels.
+
 1. **Copie le modèle** sur ton compte GitHub, en dépôt privé : bouton « Use this template » sur
    https://github.com/Aupsyy/cold-dialer, ou `gh repo create <nom> --private --template Aupsyy/cold-dialer --clone`.
 2. **Installe** : avec Claude Code, le skill `installer` (dans `skills/`) pose les questions et lance les commandes ; à la main,
@@ -49,7 +58,7 @@ Une question : les [discussions](https://github.com/Aupsyy/cold-dialer/discussio
 | Bloc | Ce qu'il fait | Documentation |
 |---|---|---|
 | **Poste d'appels** | file priorisée (score, rappels dus), fiche, script avec les crochets remplis, issues au clavier, rappels, annonce d'enregistrement, appel par l'outil de l'équipe, rendez-vous ; liste et fiche des prospects | `docs/telephonie.md`, `docs/agenda.md` |
-| **Sourcing** | registre SIRENE (API publique, sans clé), Google Maps (désactivé par défaut), e-mails publiés sur les sites, score, import en simulation puis pour de bon, liste STOP et opposition | `docs/sourcing.md` |
+| **Sourcing** | registre SIRENE (API publique, sans clé), Google par l'API officielle Places (en option, avec ta clé), e-mails publiés et signaux des sites, données publiques du registre, score, import en simulation puis pour de bon, liste STOP et opposition | `docs/sourcing.md` |
 | **Accroches** | une première phrase d'appel tirée du site public de l'entreprise : lecture respectueuse (robots.txt, une requête par seconde par domaine), écriture par Claude Code, contrôle anti-invention, relecture humaine | `docs/accroches.md` |
 | **Débrief et retours du marché** | la transcription d'un appel devient une extraction (douleurs, objection, citations mot pour mot, prochaine étape) écrite dans la fiche ; la page Retours agrège objections, issues, verdicts d'accroche et citations sur 7 ou 30 jours | `docs/debrief.md` |
 
@@ -87,12 +96,15 @@ que la tuyauterie.
 - L'entretien : `node scripts/maintenance/purger.mjs` (la purge RGPD, en simulation d'abord), la même que le bouton « Purger les fiches
   inactives » de l'écran Réglages.
 
-## Les cinq skills
+## Les huit skills
 
 | Skill | Pour |
 |---|---|
+| `demarrer` | le parcours complet pour un débutant, de la niche au premier bloc d'appels |
+| `choisir-niche` | choisir sa niche par un questionnaire : dix niches prêtes dans `config/niches/`, ou une niche sur mesure |
+| `construire-offre` | écrire son offre, son premier script et ses objections (`docs/offre.md`, `docs/scripts-de-base.md`) |
 | `installer` | installer et configurer l'instance pour une niche, de zéro au compte propriétaire |
-| `sourcer-leads` | trouver les entreprises (SIRENE, Maps si activé, ton fichier), les noter, les importer en simulation puis pour de bon |
+| `sourcer-leads` | trouver les entreprises (SIRENE, Google Places si activé, ton fichier), les compléter, les noter, les importer en simulation puis pour de bon |
 | `accroches` | lire les sites, écrire les accroches par lots, les contrôler, les faire relire, les écrire en base |
 | `debrief` | transformer la transcription d'un appel en fiche à jour, avec un compte rendu en cinq lignes |
 | `ajuster-script` | lire les retours du marché et proposer une modification de `config/niche.json` sur une branche, à relire |
@@ -125,8 +137,8 @@ Chaque personne peut s'abonner à son flux ICS (Google Agenda, Apple Calendrier,
 
 ## Légal, en résumé
 
-- Sources publiques seulement (registre SIRENE en respectant la non-diffusion, sites des entreprises, Maps si l'équipe l'active en
-  connaissance du risque) ; jamais LinkedIn.
+- Sources publiques seulement (registre SIRENE en respectant la non-diffusion, sites des entreprises, API officielle Google Places si l'équipe
+  l'active avec sa propre clé) ; jamais LinkedIn.
 - B2B sur l'intérêt légitime : l'origine des coordonnées est dite au téléphone, chaque fiche garde ses sources datées, « Ne plus
   contacter » alimente une liste d'opposition (SIREN, numéros ; sans SIREN, nom et code postal) qui bloque tout réimport, les fiches
   sans contact se purgent.
@@ -160,7 +172,7 @@ Chaque personne peut s'abonner à son flux ICS (Google Agenda, Apple Calendrier,
   différée). La lecture des sites (accroches, e-mails) contrôle le DNS avant chaque requête, pas au moment même de la connexion.
 - Accroches : un site construit entièrement en JavaScript ne donne pas de texte, donc pas d'accroche ; le contrôle anti-invention est
   lexical (les mots sont sur le site, pas forcément l'idée) : la relecture humaine reste obligatoire.
-- L'API Recherche Entreprises (SIRENE) et Google Maps n'ont pas été testés en réel (les tests utilisent de fausses réponses).
+- L'API Recherche Entreprises (SIRENE) et l'API Google Places sont testées avec de fausses réponses ; le registre a été essayé en réel sur un petit volume (récolte et enrichissement), Google Places jamais : commence par un essai et lis les compteurs.
 - Ringover n'a jamais été testé sur un vrai compte.
 - La purge RGPD n'est pas planifiée d'office (aucune tâche planifiée de l'application ne la lance) : lance-la une fois par mois, bouton
   « Purger les fiches inactives » de l'écran Réglages ou `node scripts/maintenance/purger.mjs` (`docs/legal.md`).

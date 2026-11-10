@@ -372,6 +372,15 @@ export function normaliserNbAvis(brut) {
   return /^\d{1,7}$/.test(t) ? Number(t) : null;
 }
 
+/** Un montant en euros (« 1 250 000 », « 350000,00 ») : un nombre entier arrondi, ou null s'il est absent ou illisible. */
+export function normaliserMontant(brut) {
+  const t = String(brut ?? "")
+    .trim()
+    .replace(/[\s  €]/g, "")
+    .replace(",", ".");
+  return /^-?\d{1,13}(?:\.\d+)?$/.test(t) ? Math.round(Number(t)) : null;
+}
+
 /** Un score : entier de 0 à 100 (borné) ; null s'il est absent ou illisible. */
 export function normaliserScore(brut) {
   const t = String(brut ?? "")
@@ -562,6 +571,9 @@ export const COLONNES = [
   "email_source",
   "email_date",
   "site",
+  "site_joignable",
+  "signaux_site",
+  "signaux_date",
   "ville",
   "code_postal",
   "departement",
@@ -570,6 +582,11 @@ export const COLONNES = [
   "forme_juridique",
   "effectif",
   "date_creation",
+  "chiffre_affaires",
+  "ca_annee",
+  "employeur",
+  "etat_registre",
+  "registre_date",
   "dirigeant",
   "metier",
   "est_ei",

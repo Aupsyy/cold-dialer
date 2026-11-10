@@ -138,7 +138,9 @@
       { "id": "naf_paysage", "type": "naf", "regle": { "inclure": ["81.30Z"] }, "points": 15 },
       { "id": "avis", "type": "note_google", "regle": { "min": 4, "avisMin": 10 }, "points": 10 },
       { "id": "site", "type": "a_site", "regle": {}, "points": 5 },
-      { "id": "email", "type": "a_email", "regle": {}, "points": 5 }
+      { "id": "email", "type": "a_email", "regle": {}, "points": 5 },
+      { "id": "chiffre_affaires_etabli", "type": "chiffre_affaires", "regle": { "min": 150000 }, "points": 10 },
+      { "id": "pas_de_pub_vue", "type": "signal_site", "regle": { "absents": ["pixel_meta", "balise_google_ads"] }, "points": 5 }
     ],
     "seuils": { "A": 70, "B": 45 },
     "plafond": 100
@@ -151,7 +153,7 @@
       "exclureEI": true,
       "etatAdministratif": "A"
     },
-    "maps": {
+    "places": {
       "actif": false,
       "motsCles": ["paysagiste"],
       "villes": ["Lyon"],

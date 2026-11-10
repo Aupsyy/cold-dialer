@@ -47,3 +47,6 @@ transcript*
 .playwright-mcp/
 test-results/
 playwright-report/
+
+# Sauvegarde de config/niche.json avant le choix d'une niche (scripts/niche/appliquer.mjs)
+config/niche.json.avant

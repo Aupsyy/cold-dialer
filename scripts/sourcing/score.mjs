@@ -15,6 +15,15 @@
 //   mot_nom          { mots } : un mot ou un début de mot (« paysag ») dans le nom ou l'enseigne.
 //   note_google      { min, avisMin? } : une note Google d'au moins min (et au moins avisMin avis).
 //   a_site, a_email  {} : la fiche a un site, un e-mail.
+//   chiffre_affaires { min?, max? } : le chiffre d'affaires publié au registre (colonne chiffre_affaires, en euros, écrite par
+//                    enrichir.mjs) est entre min et max, bornes comprises.
+//   employeur        { valeur? } : le registre dit que l'entreprise emploie des salariés (valeur true, par défaut) ou n'en emploie pas
+//                    (valeur false) : colonne employeur, « oui » ou « non ».
+//   signal_site      { presents?, absents? } : des signaux du site (enrichir.mjs : colonnes site_joignable et signaux_site) : tous ceux
+//                    de presents sont vus, aucun de ceux de absents ne l'est ; un site non lu ne compte jamais.
+// Une fiche sans la donnée d'un critère (pas de chiffre d'affaires, site non lu…) ne gagne ni ne perd de points : le critère est faux.
+// Une entreprise que le registre dit cessée (colonne etat_registre autre que « A ») est écartée : score 0, tier C, « cessee » dans
+// score_detail, sans qu'il faille la déclarer dans la grille.
 //
 // Usage : node scripts/sourcing/score.mjs <entree.csv> [--sortie <fichier.csv>] [--essai] [--config <niche.json>]
 //   Écrit <entree>-score.csv : les colonnes score, tier et score_detail (les critères retenus) sont ajoutées ou remplacées.
@@ -41,7 +50,9 @@ import {
   messageSur,
   nettoyerTexte,
   normaliserDate,
+  normaliserBooleen,
   normaliserEmail,
+  normaliserMontant,
   normaliserNaf,
   normaliserNbAvis,
   normaliserNote,
@@ -138,6 +149,27 @@ export function evaluerCritere(critere, fiche, { aujourdhui }) {
       return normaliserSite(fiche.site) !== null;
     case "a_email":
       return normaliserEmail(fiche.email) !== null;
+    case "chiffre_affaires": {
+      const ca = normaliserMontant(fiche.chiffre_affaires);
+      return ca !== null && ca >= (r.min ?? 0) && ca <= (r.max ?? Infinity);
+    }
+    case "employeur": {
+      const employeur = normaliserBooleen(fiche.employeur);
+      return employeur !== null && employeur === (r.valeur ?? true);
+    }
+    case "signal_site": {
+      // Sans lecture réussie du site (colonne vide ou « non »), aucun signal n'est ni vu ni absent.
+      const joignable = normaliserBooleen(fiche.site_joignable);
+      if (joignable === null) return false;
+      const vus = String(fiche.signaux_site ?? "")
+        .split(",")
+        .map((x) => x.trim())
+        .filter(Boolean);
+      const present = (x) => (x === "site_joignable" ? joignable : joignable && vus.includes(x));
+      const absent = (x) => (x === "site_joignable" ? !joignable : joignable && !vus.includes(x));
+      const { presents = [], absents = [] } = r;
+      return presents.length + absents.length > 0 && presents.every(present) && absents.every(absent);
+    }
     default:
       // Un type inconnu ne peut pas venir d'une config validée : on ne lui donne aucun point.
       return false;
@@ -152,8 +184,15 @@ export function tierDepuisScore(score, seuils) {
   return "C";
 }
 
+/** Vrai si le registre dit l'entreprise cessée : colonne etat_registre renseignée et autre que « A » (active). */
+export function estCessee(fiche) {
+  const etat = String(fiche.etat_registre ?? "").trim().toUpperCase();
+  return etat !== "" && etat !== "A";
+}
+
 /** Le score d'une fiche avec la grille (config.score) : { score, tier, retenus (identifiants des critères vrais) }. */
 export function calculerScore(fiche, grille, { aujourdhui }) {
+  if (estCessee(fiche)) return { score: 0, tier: "C", retenus: ["cessee"] };
   let total = 0;
   const retenus = [];
   for (const critere of grille.criteres) {
@@ -185,7 +224,7 @@ export function noterTableau(lignes, grille, aujourdhui) {
     compteurs.tiers[r.tier]++;
     const tranche = TRANCHES_SCORE.find(([a, b]) => r.score >= a && r.score <= b);
     compteurs.tranches[`${tranche[0]}-${tranche[1]}`]++;
-    for (const id of r.retenus) compteurs.criteres[id]++;
+    for (const id of r.retenus) compteurs.criteres[id] = (compteurs.criteres[id] ?? 0) + 1;
     return { ...ligne, score: String(r.score), tier: r.tier, score_detail: r.retenus.join(" + ") };
   });
   return { lignes: notees, compteurs };
@@ -199,6 +238,7 @@ export function rapportScore(compteurs, grille) {
   l.push(`Scores : ${Object.entries(compteurs.tranches).map(([t, n]) => `${t} : ${n}`).join(" ; ")}`);
   l.push("Critères (fiches concernées) :");
   for (const c of grille.criteres) l.push(`  ${c.id} (${c.type}, ${c.points > 0 ? "+" : ""}${c.points}) : ${compteurs.criteres[c.id]}`);
+  if (compteurs.criteres.cessee) l.push(`Écartées, entreprise cessée au registre (score 0, tier C) : ${compteurs.criteres.cessee}`);
   return l;
 }
 

@@ -1,0 +1,246 @@
+{
+  "code": "paysagistes",
+  "metier": "Paysagistes",
+  "tailleVisee": "2 à 20 salariés",
+  "pourquoi": "Le gérant est souvent sur un chantier mais décroche, et la saison crée des creux qu'il veut combler ; le besoin se voit de l'extérieur (réalisations en ligne, fiche locale).",
+  "cible": {
+    "description": "Entreprises de création et d'entretien de jardins et d'espaces verts, implantées localement, avec une équipe sur le terrain.",
+    "metiers": [
+      "paysagiste",
+      "entretien de jardins",
+      "création de jardins",
+      "élagage"
+    ],
+    "tailleMin": 2,
+    "tailleMax": 20,
+    "decideur": "gérant",
+    "exclusions": [
+      "Entreprises en liquidation ou en sommeil",
+      "Réseaux de franchise nationaux",
+      "Entrepreneurs individuels sans salarié"
+    ]
+  },
+  "sources": {
+    "sirene": {
+      "naf": [
+        "81.30Z"
+      ],
+      "motsNomExclure": [
+        "holding"
+      ],
+      "exclureEI": true
+    },
+    "motsVidesAppariement": [
+      "sarl",
+      "sas",
+      "sasu",
+      "eurl",
+      "paysage",
+      "paysages",
+      "paysagiste",
+      "jardin",
+      "jardins",
+      "espaces",
+      "verts",
+      "et",
+      "de",
+      "des",
+      "du",
+      "la",
+      "le",
+      "les"
+    ],
+    "prefixesEmail": [
+      "contact",
+      "info",
+      "bonjour",
+      "devis"
+    ]
+  },
+  "google": {
+    "motsCles": [
+      "paysagiste",
+      "entreprise de paysage",
+      "création de jardin",
+      "entretien de jardin"
+    ]
+  },
+  "score": {
+    "criteres": [
+      {
+        "id": "societe",
+        "type": "forme_juridique",
+        "regle": {
+          "inclure": [
+            "5498",
+            "5499",
+            "5710",
+            "5720"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "taille",
+        "type": "effectif",
+        "regle": {
+          "min": 3,
+          "max": 20
+        },
+        "points": 25
+      },
+      {
+        "id": "installee",
+        "type": "anciennete",
+        "regle": {
+          "minAns": 3
+        },
+        "points": 15
+      },
+      {
+        "id": "naf_metier",
+        "type": "naf",
+        "regle": {
+          "inclure": [
+            "81.30Z"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "metier_dans_le_nom",
+        "type": "mot_nom",
+        "regle": {
+          "mots": [
+            "paysag",
+            "jardin",
+            "espaces verts"
+          ]
+        },
+        "points": 10
+      },
+      {
+        "id": "avis",
+        "type": "note_google",
+        "regle": {
+          "min": 4,
+          "avisMin": 10
+        },
+        "points": 10
+      },
+      {
+        "id": "site",
+        "type": "a_site",
+        "regle": {},
+        "points": 5
+      },
+      {
+        "id": "email",
+        "type": "a_email",
+        "regle": {},
+        "points": 5
+      }
+    ],
+    "seuils": {
+      "A": 70,
+      "B": 45
+    },
+    "plafond": 100
+  },
+  "script": {
+    "questions": [
+      {
+        "id": "source_chantiers",
+        "texte": "Aujourd'hui, vos chantiers arrivent surtout par quel canal : bouche-à-oreille, plateformes, maîtres d'œuvre, autre chose ?",
+        "but": "Connaître la source actuelle des chantiers."
+      },
+      {
+        "id": "type_clients",
+        "texte": "Vous travaillez plutôt pour des particuliers, des copropriétés ou des collectivités ?",
+        "but": "Savoir quel type de client il sert."
+      },
+      {
+        "id": "saison",
+        "texte": "Votre activité suit beaucoup les saisons : il y a des périodes creuses que vous aimeriez mieux remplir ?",
+        "but": "Repérer le besoin lié à la saisonnalité."
+      },
+      {
+        "id": "capacite",
+        "texte": "Si des demandes sérieuses arrivaient en plus, auriez-vous de la place dans le planning de vos équipes ?",
+        "but": "Vérifier qu'il peut prendre de nouveaux chantiers."
+      }
+    ]
+  },
+  "objections": [
+    {
+      "code": "pas-le-temps",
+      "libelle": "Je n'ai pas le temps",
+      "reponse": "Je comprends, vous êtes sur les chantiers. Je ne vous prends pas de temps maintenant : on fixe un échange court à l'heure qui vous arrange, plutôt en début de matinée ou en fin de journée ?",
+      "relance": "Je vous propose [deux créneaux] ; si aucun ne va, donnez-moi le vôtre."
+    },
+    {
+      "code": "assez-de-travail",
+      "libelle": "J'ai déjà assez de travail",
+      "reponse": "Tant mieux, c'est bon signe. La question n'est pas d'avoir plus de travail mais de choisir les chantiers que vous préférez. Il vous arrive d'en refuser ?"
+    },
+    {
+      "code": "bouche-a-oreille",
+      "libelle": "Je marche au bouche-à-oreille",
+      "reponse": "C'est la meilleure des recommandations. Le bouche-à-oreille a pourtant ses à-coups, surtout entre deux saisons. Vous aimeriez un peu plus de régularité ?"
+    },
+    {
+      "code": "plateformes-suffisent",
+      "libelle": "Les plateformes me suffisent",
+      "reponse": "D'accord. Les demandes que vous y recevez vous conviennent-elles, sur la distance et le type de travaux ? Si oui, on n'a peut-être pas besoin de se parler ; sinon, l'échange sert à voir une autre voie."
+    },
+    {
+      "code": "envoyez-un-mail",
+      "libelle": "Envoyez-moi un mail",
+      "reponse": "Avec plaisir. Pour vous envoyer quelque chose d'utile et pas une brochure de plus : quel type de chantier voulez-vous développer en priorité ?",
+      "relance": "Et pour en parler de vive voix ensuite, je vous propose [deux créneaux]."
+    },
+    {
+      "code": "combien-ca-coute",
+      "libelle": "Combien ça coûte ?",
+      "reponse": "Ça dépend de votre zone et des chantiers visés, et je ne veux pas vous donner un chiffre au hasard. C'est justement ce qu'on regarde ensemble pendant l'échange."
+    }
+  ],
+  "accroche": {
+    "exemples": [
+      "J'ai vu sur votre site la terrasse en bois et le massif de graminées que vous avez réalisés : c'est ce type de chantier que vous voulez développer ?",
+      "Vos photos de bassins naturels m'ont arrêté : ce sont des projets que vous aimeriez faire plus souvent dans votre secteur ?",
+      "Je vois que vous proposez l'entretien à l'année en plus de la création : c'est une part importante de votre activité aujourd'hui ?"
+    ],
+    "motsIndices": [
+      "terrasse",
+      "bassin",
+      "potager",
+      "clôture",
+      "élagage",
+      "gazon",
+      "arrosage",
+      "massif",
+      "allée"
+    ]
+  },
+  "debrief": {
+    "champs": [
+      {
+        "id": "source_chantiers",
+        "question": "D'où viennent ses chantiers aujourd'hui ?"
+      },
+      {
+        "id": "type_clients",
+        "question": "Quel type de clients sert-il (particuliers, copropriétés, collectivités) ?"
+      },
+      {
+        "id": "saison",
+        "question": "Ses creux de saison, et comment les remplit-il ?"
+      },
+      {
+        "id": "frein_principal",
+        "question": "Qu'est-ce qui le freine le plus ?"
+      }
+    ]
+  }
+}

@@ -1,0 +1,249 @@
+{
+  "code": "traiteurs-evenementiels",
+  "metier": "Traiteurs événementiels",
+  "tailleVisee": "2 à 20 salariés",
+  "pourquoi": "Le dirigeant est aussi le chef commercial : il répond car chaque appel peut être un mariage ou un séminaire. La demande est visible en ligne (galeries, avis), et le panier moyen d'un événement est élevé.",
+  "cible": {
+    "description": "Traiteurs qui préparent et servent des repas pour des mariages, séminaires et réceptions, avec laboratoire et équipe de service.",
+    "metiers": [
+      "traiteur",
+      "traiteur de mariage",
+      "traiteur d'entreprise",
+      "réception"
+    ],
+    "tailleMin": 2,
+    "tailleMax": 20,
+    "decideur": "gérant ou chef traiteur",
+    "exclusions": [
+      "Restaurants sans activité de traiteur",
+      "Chaînes de restauration collective",
+      "Entreprises en liquidation ou en sommeil"
+    ]
+  },
+  "sources": {
+    "sirene": {
+      "naf": [
+        "56.21Z"
+      ],
+      "motsNomExclure": [
+        "holding"
+      ],
+      "exclureEI": true
+    },
+    "motsVidesAppariement": [
+      "sarl",
+      "sas",
+      "sasu",
+      "eurl",
+      "traiteur",
+      "traiteurs",
+      "reception",
+      "réception",
+      "receptions",
+      "réceptions",
+      "evenement",
+      "événement",
+      "et",
+      "de",
+      "des",
+      "du",
+      "la",
+      "le",
+      "les"
+    ],
+    "prefixesEmail": [
+      "contact",
+      "info",
+      "bonjour",
+      "devis",
+      "reception"
+    ]
+  },
+  "google": {
+    "motsCles": [
+      "traiteur mariage",
+      "traiteur événementiel",
+      "traiteur séminaire entreprise",
+      "traiteur réception"
+    ]
+  },
+  "score": {
+    "criteres": [
+      {
+        "id": "societe",
+        "type": "forme_juridique",
+        "regle": {
+          "inclure": [
+            "5498",
+            "5499",
+            "5710",
+            "5720"
+          ]
+        },
+        "points": 10
+      },
+      {
+        "id": "taille",
+        "type": "effectif",
+        "regle": {
+          "min": 2,
+          "max": 20
+        },
+        "points": 20
+      },
+      {
+        "id": "installee",
+        "type": "anciennete",
+        "regle": {
+          "minAns": 3
+        },
+        "points": 10
+      },
+      {
+        "id": "naf_metier",
+        "type": "naf",
+        "regle": {
+          "inclure": [
+            "56.21Z"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "metier_dans_le_nom",
+        "type": "mot_nom",
+        "regle": {
+          "mots": [
+            "traiteur",
+            "reception",
+            "réception",
+            "event"
+          ]
+        },
+        "points": 20
+      },
+      {
+        "id": "avis",
+        "type": "note_google",
+        "regle": {
+          "min": 4,
+          "avisMin": 10
+        },
+        "points": 10
+      },
+      {
+        "id": "site",
+        "type": "a_site",
+        "regle": {},
+        "points": 10
+      },
+      {
+        "id": "email",
+        "type": "a_email",
+        "regle": {},
+        "points": 5
+      }
+    ],
+    "seuils": {
+      "A": 70,
+      "B": 45
+    },
+    "plafond": 100
+  },
+  "script": {
+    "questions": [
+      {
+        "id": "source_evenements",
+        "texte": "Vos événements arrivent surtout d'où : recommandations de lieux ou de photographes, internet, entreprises clientes, bouche-à-oreille ?",
+        "but": "Connaître la source actuelle des événements."
+      },
+      {
+        "id": "type_evenements",
+        "texte": "Vous travaillez plutôt pour des mariages, des entreprises, des réceptions privées, ou un mélange ?",
+        "but": "Situer sa clientèle."
+      },
+      {
+        "id": "saison",
+        "texte": "Vos saisons fortes sont bien remplies, mais l'activité est plus calme le reste de l'année : vous aimeriez mieux la remplir ?",
+        "but": "Repérer le besoin hors saison."
+      },
+      {
+        "id": "capacite",
+        "texte": "Si plus de demandes sérieuses arrivaient, votre équipe pourrait assurer davantage d'événements ?",
+        "but": "Vérifier la capacité à servir plus d'événements."
+      }
+    ]
+  },
+  "objections": [
+    {
+      "code": "pas-le-temps",
+      "libelle": "Je n'ai pas le temps",
+      "reponse": "Je comprends, vous êtes en production ou en préparation. Je ne vous prends pas de temps maintenant : on cale un échange court à un moment plus calme, plutôt en début de matinée ou en fin de journée ?",
+      "relance": "Je vous propose [deux créneaux] ; si aucun ne va, donnez-moi le vôtre."
+    },
+    {
+      "code": "agenda-plein",
+      "libelle": "Mon agenda est déjà plein",
+      "reponse": "Tant mieux. Plein pour la haute saison, peut-être ? Et pour le reste de l'année, ou pour les dates de semaine, vous avez la même chance ?"
+    },
+    {
+      "code": "recommandations-suffisent",
+      "libelle": "Je marche aux recommandations des lieux",
+      "reponse": "C'est précieux. Mais cela vous rend dépendant de quelques lieux. Aimeriez-vous aussi que les futurs mariés qui cherchent un traiteur dans votre région découvrent votre travail ?"
+    },
+    {
+      "code": "deja-un-site",
+      "libelle": "J'ai déjà un photographe et un site",
+      "reponse": "Très bien. Qu'est-ce qui fonctionne dans ce que vous avez, et qu'aimeriez-vous voir en plus ? L'échange peut servir de point de comparaison, sans rien changer à ce qui fonctionne."
+    },
+    {
+      "code": "envoyez-un-mail",
+      "libelle": "Envoyez-moi un mail",
+      "reponse": "Avec plaisir. Pour vous écrire quelque chose d'utile et pas une brochure de plus : quel type d'événement voulez-vous développer en priorité ?",
+      "relance": "Et pour en parler de vive voix ensuite, je vous propose [deux créneaux]."
+    },
+    {
+      "code": "combien-ca-coute",
+      "libelle": "Combien ça coûte ?",
+      "reponse": "Ça dépend de votre zone et du type d'événements visés, et je ne veux pas vous donner un chiffre au hasard. C'est justement ce qu'on regarde ensemble pendant l'échange."
+    }
+  ],
+  "accroche": {
+    "exemples": [
+      "J'ai vu sur votre site le buffet de produits de saison et la pièce montée que vous avez préparés : ce sont les réceptions que vous voulez faire plus souvent ?",
+      "Votre page sur les séminaires et les repas d'entreprise m'a intéressé : c'est une clientèle que vous aimeriez développer dans votre secteur ?",
+      "Je vois que vous proposez des cocktails dînatoires en plus des repas assis : c'est une formule qui plaît beaucoup à vos clients aujourd'hui ?"
+    ],
+    "motsIndices": [
+      "mariage",
+      "cocktail",
+      "buffet",
+      "séminaire",
+      "réception",
+      "menu",
+      "produits locaux",
+      "pièce montée",
+      "banquet"
+    ]
+  },
+  "debrief": {
+    "champs": [
+      {
+        "id": "source_evenements",
+        "question": "D'où viennent ses événements aujourd'hui ?"
+      },
+      {
+        "id": "type_evenements",
+        "question": "Mariages, entreprises, réceptions privées : où se situe-t-il ?"
+      },
+      {
+        "id": "saison",
+        "question": "Comment vit-il les creux hors saison ?"
+      },
+      {
+        "id": "frein_principal",
+        "question": "Qu'est-ce qui le freine le plus ?"
+      }
+    ]
+  }
+}

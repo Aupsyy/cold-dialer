@@ -96,6 +96,13 @@ export function besoinsSecrets(niche) {
     default:
       break;
   }
+  if (niche.sources.places?.actif) {
+    aColler.push({
+      nom: "GOOGLE_PLACES_API_KEY",
+      ou: "Google Cloud Console, Identifiants (clé restreinte à Places API (New)) ; sert aux scripts de sourcing, dans .env.local sur ta machine : inutile dans Vercel",
+      facultative: true,
+    });
+  }
   aTirer.push({ nom: "CRON_SECRET", min: 16, usage: "envoyé par Vercel à ses tâches planifiées : il ne se colle nulle part" });
   return { aTirer, aColler };
 }

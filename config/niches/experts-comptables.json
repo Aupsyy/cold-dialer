@@ -1,0 +1,248 @@
+{
+  "code": "experts-comptables",
+  "metier": "Cabinets d'expertise comptable",
+  "tailleVisee": "3 à 25 salariés",
+  "pourquoi": "L'associé dirigeant est joignable mais souvent filtré par un accueil : l'appel doit bien passer le standard. Le besoin de nouveaux clients est constant, et un client reste longtemps, ce qui justifie un investissement.",
+  "cible": {
+    "description": "Cabinets d'expertise comptable indépendants, qui accompagnent des petites entreprises et des artisans de leur zone.",
+    "metiers": [
+      "expert-comptable",
+      "cabinet comptable",
+      "gestion et paie"
+    ],
+    "tailleMin": 3,
+    "tailleMax": 25,
+    "decideur": "expert-comptable associé ou gérant",
+    "exclusions": [
+      "Réseaux nationaux et grands groupes",
+      "Entrepreneurs individuels sans salarié",
+      "Entreprises en liquidation ou en sommeil"
+    ]
+  },
+  "sources": {
+    "sirene": {
+      "naf": [
+        "69.20Z"
+      ],
+      "motsNomExclure": [
+        "holding"
+      ],
+      "exclureEI": true
+    },
+    "motsVidesAppariement": [
+      "sarl",
+      "sas",
+      "sasu",
+      "selarl",
+      "selas",
+      "expertise",
+      "comptable",
+      "comptables",
+      "conseil",
+      "audit",
+      "cabinet",
+      "et",
+      "de",
+      "des",
+      "du",
+      "la",
+      "le",
+      "les"
+    ],
+    "prefixesEmail": [
+      "contact",
+      "info",
+      "bonjour",
+      "cabinet",
+      "accueil"
+    ]
+  },
+  "google": {
+    "motsCles": [
+      "expert-comptable",
+      "cabinet d'expertise comptable",
+      "comptable pour entreprise",
+      "cabinet comptable"
+    ]
+  },
+  "score": {
+    "criteres": [
+      {
+        "id": "societe",
+        "type": "forme_juridique",
+        "regle": {
+          "inclure": [
+            "5498",
+            "5499",
+            "5710",
+            "5720",
+            "5485",
+            "5785"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "taille",
+        "type": "effectif",
+        "regle": {
+          "min": 3,
+          "max": 25
+        },
+        "points": 25
+      },
+      {
+        "id": "installee",
+        "type": "anciennete",
+        "regle": {
+          "minAns": 5
+        },
+        "points": 15
+      },
+      {
+        "id": "naf_metier",
+        "type": "naf",
+        "regle": {
+          "inclure": [
+            "69.20Z"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "metier_dans_le_nom",
+        "type": "mot_nom",
+        "regle": {
+          "mots": [
+            "compta",
+            "expert",
+            "audit",
+            "conseil"
+          ]
+        },
+        "points": 10
+      },
+      {
+        "id": "avis",
+        "type": "note_google",
+        "regle": {
+          "min": 4,
+          "avisMin": 10
+        },
+        "points": 10
+      },
+      {
+        "id": "site",
+        "type": "a_site",
+        "regle": {},
+        "points": 5
+      },
+      {
+        "id": "email",
+        "type": "a_email",
+        "regle": {},
+        "points": 5
+      }
+    ],
+    "seuils": {
+      "A": 70,
+      "B": 45
+    },
+    "plafond": 100
+  },
+  "script": {
+    "questions": [
+      {
+        "id": "source_clients",
+        "texte": "Vos nouveaux clients arrivent surtout d'où : recommandations, partenaires comme les banques ou les notaires, internet ?",
+        "but": "Connaître la source actuelle des clients."
+      },
+      {
+        "id": "clientele_voulue",
+        "texte": "Quel type de client aimeriez-vous accueillir davantage : artisans, commerçants, professions libérales, créateurs d'entreprise ?",
+        "but": "Savoir quelle clientèle il vise."
+      },
+      {
+        "id": "services_voulus",
+        "texte": "Vous aimeriez développer plutôt le conseil et l'accompagnement, ou la tenue comptable classique ?",
+        "but": "Situer son positionnement."
+      },
+      {
+        "id": "capacite_cabinet",
+        "texte": "Si de nouveaux dossiers arrivaient, votre équipe aurait de la place pour les prendre en charge ?",
+        "but": "Vérifier la capacité du cabinet."
+      }
+    ]
+  },
+  "objections": [
+    {
+      "code": "pas-le-temps",
+      "libelle": "Je n'ai pas le temps",
+      "reponse": "Je comprends, vous êtes en pleine période de dossiers. Je ne vous prends pas de temps maintenant : on cale un échange court à un moment plus calme, plutôt en début de matinée ou en fin de journée ?",
+      "relance": "Je vous propose [deux créneaux] ; si aucun ne va, donnez-moi le vôtre."
+    },
+    {
+      "code": "cabinet-complet",
+      "libelle": "Mon cabinet est complet",
+      "reponse": "C'est une bonne nouvelle. Vous choisissez donc vos clients ? Quel genre de dossiers aimeriez-vous avoir à la place de ceux qui vous prennent beaucoup de temps pour peu de valeur ?"
+    },
+    {
+      "code": "recommandations-suffisent",
+      "libelle": "Je fonctionne par recommandations",
+      "reponse": "C'est précieux, et c'est la base d'un cabinet de confiance. Mais les recommandations ne se commandent pas. Aimeriez-vous aussi être trouvé par ceux qui cherchent un cabinet près de chez eux ?"
+    },
+    {
+      "code": "deja-un-prestataire",
+      "libelle": "Je travaille déjà avec quelqu'un",
+      "reponse": "Très bien. Qu'est-ce qui vous plaît dans ce qu'il fait, et qu'aimeriez-vous voir en plus ? L'échange peut servir de point de comparaison, sans rien changer à ce qui fonctionne."
+    },
+    {
+      "code": "envoyez-un-mail",
+      "libelle": "Envoyez-moi un mail",
+      "reponse": "Avec plaisir. Pour vous écrire quelque chose d'utile et pas une brochure de plus : quel type de clientèle voulez-vous développer en priorité ?",
+      "relance": "Et pour en parler de vive voix ensuite, je vous propose [deux créneaux]."
+    },
+    {
+      "code": "combien-ca-coute",
+      "libelle": "Combien ça coûte ?",
+      "reponse": "Ça dépend de votre zone et de la clientèle visée, et je ne veux pas vous donner un chiffre au hasard. C'est justement ce qu'on regarde ensemble pendant l'échange."
+    }
+  ],
+  "accroche": {
+    "exemples": [
+      "J'ai vu sur votre site que vous accompagnez les créateurs d'entreprise dès le démarrage : c'est une clientèle que vous voulez développer davantage ?",
+      "Votre page sur l'accompagnement des artisans et des commerçants m'a intéressé : c'est le type de clients que vous aimeriez accueillir plus souvent ?",
+      "Je vois que vous proposez aussi du conseil en gestion en plus de la comptabilité : c'est une activité que vous souhaitez mettre en avant ?"
+    ],
+    "motsIndices": [
+      "création d'entreprise",
+      "artisans",
+      "commerçants",
+      "paie",
+      "bilan",
+      "conseil",
+      "gestion",
+      "profession libérale"
+    ]
+  },
+  "debrief": {
+    "champs": [
+      {
+        "id": "source_clients",
+        "question": "D'où viennent ses nouveaux clients aujourd'hui ?"
+      },
+      {
+        "id": "clientele_voulue",
+        "question": "Quelle clientèle veut-il développer ?"
+      },
+      {
+        "id": "services_voulus",
+        "question": "Conseil ou tenue classique : que veut-il mettre en avant ?"
+      },
+      {
+        "id": "frein_principal",
+        "question": "Qu'est-ce qui le freine le plus ?"
+      }
+    ]
+  }
+}

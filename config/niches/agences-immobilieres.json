@@ -1,0 +1,245 @@
+{
+  "code": "agences-immobilieres",
+  "metier": "Agences immobilières indépendantes",
+  "tailleVisee": "2 à 15 salariés",
+  "pourquoi": "Le dirigeant d'une agence indépendante répond au téléphone par réflexe, car chaque appel peut être un vendeur. Il vit du mandat de vente : il sait ce que lui coûte un mandat confié à un concurrent.",
+  "cible": {
+    "description": "Agences immobilières indépendantes de quartier ou de ville moyenne, qui font de la vente et de la location pour des particuliers.",
+    "metiers": [
+      "agence immobilière",
+      "transaction immobilière",
+      "location et gestion"
+    ],
+    "tailleMin": 2,
+    "tailleMax": 15,
+    "decideur": "gérant ou directeur d'agence",
+    "exclusions": [
+      "Agences d'un réseau national de franchise",
+      "Mandataires sans local",
+      "Entreprises en liquidation ou en sommeil"
+    ]
+  },
+  "sources": {
+    "sirene": {
+      "naf": [
+        "68.31Z"
+      ],
+      "motsNomExclure": [
+        "holding"
+      ],
+      "exclureEI": true
+    },
+    "motsVidesAppariement": [
+      "sarl",
+      "sas",
+      "sasu",
+      "eurl",
+      "immobilier",
+      "immobiliere",
+      "immobilière",
+      "immo",
+      "agence",
+      "transaction",
+      "et",
+      "de",
+      "des",
+      "du",
+      "la",
+      "le",
+      "les"
+    ],
+    "prefixesEmail": [
+      "contact",
+      "info",
+      "bonjour",
+      "agence",
+      "accueil"
+    ]
+  },
+  "google": {
+    "motsCles": [
+      "agence immobilière",
+      "agence immobilière indépendante",
+      "estimation immobilière",
+      "vente maison appartement"
+    ]
+  },
+  "score": {
+    "criteres": [
+      {
+        "id": "societe",
+        "type": "forme_juridique",
+        "regle": {
+          "inclure": [
+            "5498",
+            "5499",
+            "5710",
+            "5720"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "taille",
+        "type": "effectif",
+        "regle": {
+          "min": 2,
+          "max": 15
+        },
+        "points": 20
+      },
+      {
+        "id": "installee",
+        "type": "anciennete",
+        "regle": {
+          "minAns": 3
+        },
+        "points": 15
+      },
+      {
+        "id": "naf_metier",
+        "type": "naf",
+        "regle": {
+          "inclure": [
+            "68.31Z"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "metier_dans_le_nom",
+        "type": "mot_nom",
+        "regle": {
+          "mots": [
+            "immo",
+            "agence",
+            "transaction"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "avis",
+        "type": "note_google",
+        "regle": {
+          "min": 4,
+          "avisMin": 10
+        },
+        "points": 10
+      },
+      {
+        "id": "site",
+        "type": "a_site",
+        "regle": {},
+        "points": 5
+      },
+      {
+        "id": "email",
+        "type": "a_email",
+        "regle": {},
+        "points": 5
+      }
+    ],
+    "seuils": {
+      "A": 70,
+      "B": 45
+    },
+    "plafond": 100
+  },
+  "script": {
+    "questions": [
+      {
+        "id": "source_mandats",
+        "texte": "Vos mandats de vente arrivent surtout comment : estimations demandées en ligne, passage en vitrine, recommandations, portails d'annonces ?",
+        "but": "Connaître la source actuelle des mandats."
+      },
+      {
+        "id": "type_activite",
+        "texte": "Vous travaillez plutôt sur la vente, sur la location et la gestion, ou sur un mélange des deux ?",
+        "but": "Situer son activité."
+      },
+      {
+        "id": "choix_agence",
+        "texte": "Quand un vendeur compare plusieurs agences, qu'est-ce qui lui fait choisir la vôtre, d'après votre expérience ?",
+        "but": "Comprendre ce qui fait gagner un mandat."
+      },
+      {
+        "id": "capacite_equipe",
+        "texte": "Si vous receviez plus de demandes d'estimation, votre équipe aurait le temps de toutes les traiter ?",
+        "but": "Vérifier la capacité de l'équipe."
+      }
+    ]
+  },
+  "objections": [
+    {
+      "code": "pas-le-temps",
+      "libelle": "Je n'ai pas le temps",
+      "reponse": "Je comprends, vous êtes entre deux visites. Je ne vous prends pas de temps maintenant : on cale un échange court à l'heure qui vous arrange, plutôt en début de matinée ou en fin de journée ?",
+      "relance": "Je vous propose [deux créneaux] ; si aucun ne va, donnez-moi le vôtre."
+    },
+    {
+      "code": "assez-de-mandats",
+      "libelle": "J'ai assez de mandats",
+      "reponse": "Tant mieux. Ce sont des mandats exclusifs ou des mandats simples, partagés avec d'autres agences ? C'est souvent là que se joue la différence."
+    },
+    {
+      "code": "portails-suffisent",
+      "libelle": "Les portails d'annonces me suffisent",
+      "reponse": "Ils font leur travail pour les annonces. Mais le vendeur qui cherche son agence, lui, tape le nom de sa ville. Savez-vous ce qu'il voit en premier ?"
+    },
+    {
+      "code": "deja-un-prestataire",
+      "libelle": "Je travaille déjà avec quelqu'un",
+      "reponse": "Très bien. Qu'est-ce qui vous plaît dans ce qu'il fait, et qu'aimeriez-vous voir en plus ? L'échange peut servir de point de comparaison, sans rien changer à ce qui fonctionne."
+    },
+    {
+      "code": "envoyez-un-mail",
+      "libelle": "Envoyez-moi un mail",
+      "reponse": "Avec plaisir. Pour vous écrire quelque chose d'utile et pas une brochure de plus : vous voulez surtout plus de vendeurs, plus de bailleurs, ou plus d'acheteurs ?",
+      "relance": "Et pour en parler de vive voix ensuite, je vous propose [deux créneaux]."
+    },
+    {
+      "code": "combien-ca-coute",
+      "libelle": "Combien ça coûte ?",
+      "reponse": "Ça dépend de votre secteur et de ce que vous visez, et je ne veux pas vous donner un chiffre au hasard. C'est justement ce qu'on regarde ensemble pendant l'échange."
+    }
+  ],
+  "accroche": {
+    "exemples": [
+      "J'ai vu sur votre site votre service d'estimation gratuite et les biens que vous avez vendus dans le quartier : ce sont les mandats que vous voulez développer ?",
+      "Votre agence met en avant la gestion locative en plus de la vente : c'est une activité que vous cherchez à développer dans votre secteur ?",
+      "Je vois que vous présentez vos biens avec de vraies visites virtuelles : c'est un point sur lequel vous voulez vous démarquer de vos confrères ?"
+    ],
+    "motsIndices": [
+      "estimation",
+      "mandat",
+      "vente",
+      "location",
+      "gestion locative",
+      "quartier",
+      "visite virtuelle",
+      "appartement",
+      "maison"
+    ]
+  },
+  "debrief": {
+    "champs": [
+      {
+        "id": "source_mandats",
+        "question": "D'où viennent ses mandats aujourd'hui ?"
+      },
+      {
+        "id": "type_activite",
+        "question": "Vente, location, gestion : où se concentre son activité ?"
+      },
+      {
+        "id": "choix_agence",
+        "question": "Pourquoi un vendeur le choisit-il, selon lui ?"
+      },
+      {
+        "id": "frein_principal",
+        "question": "Qu'est-ce qui le freine le plus ?"
+      }
+    ]
+  }
+}

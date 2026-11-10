@@ -35,6 +35,8 @@ export const EXTENSIONS_REFUSEES =
 export const EXTENSIONS_BINAIRES_PERMISES = /\.(png|jpe?g|gif|webp|ico|svg|woff2?|ttf|otf)$/i;
 /** Le JSON ne sert qu'à la configuration du projet. */
 export const JSON_PERMIS = new Set(["package.json", "package-lock.json", "tsconfig.json", "vercel.json", "config/niche.json", "config/niche.exemple.json"]);
+/** Les niches prêtes (config/niches/<code>.json) : de la configuration, pas des données. */
+export const JSON_NICHES_PRETES = /^config\/niches\/[a-z0-9-]+\.json$/;
 
 /** Ce que .gitignore doit couvrir : données, secrets, caches, audio, exports, transcriptions, dossiers d'outils. */
 export const IGNORES_ATTENDUS = [
@@ -114,7 +116,7 @@ export function problemesDeLigne(texte, termes, options = {}) {
 export function problemesDeChemin(fichier, termes) {
   const constats = [];
   if (EXTENSIONS_REFUSEES.test(fichier)) constats.push(["fichier de données, d'audio, d'archive ou d'export interdit dans le dépôt", ""]);
-  if (fichier.endsWith(".json") && !JSON_PERMIS.has(fichier)) constats.push(["JSON hors de la configuration du projet (données ?)", ""]);
+  if (fichier.endsWith(".json") && !JSON_PERMIS.has(fichier) && !JSON_NICHES_PRETES.test(fichier)) constats.push(["JSON hors de la configuration du projet (données ?)", ""]);
   if (/(^|\/)\.env/.test(fichier) && fichier !== ".env.example") constats.push(["fichier .env suivi par git", ""]);
   if (termes) termes.forEach((re, k) => { if (re.test(fichier)) constats.push(["terme interdit dans le nom du fichier", `n°${k + 1} de la liste`]); });
   return constats;

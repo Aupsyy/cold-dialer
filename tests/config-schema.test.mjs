@@ -225,8 +225,8 @@ test("cohérences : tailles, seuils, règles du score, longueur des accroches, i
   );
 });
 
-test("Maps est livré désactivé dans l'exemple", () => {
-  assert.equal(exemple().sources.maps.actif, false);
+test("Google Places est livré désactivé dans l'exemple", () => {
+  assert.equal(exemple().sources.places.actif, false);
 });
 
 test("un exemple d'accroche trop court ou trop long est refusé (de 15 à 30 mots)", () => {

@@ -1,11 +1,14 @@
 # Les skills Claude Code
 
-Cinq skills accompagnent le dépôt. Un skill est un dossier avec un fichier `SKILL.md` : des consignes que Claude Code suit quand ta
+Huit skills accompagnent le dépôt. Un skill est un dossier avec un fichier `SKILL.md` : des consignes que Claude Code suit quand ta
 demande correspond à sa description. Ils lancent les scripts du dépôt (`node scripts/…`), toujours en essai avant d'écrire en base, et
 ne montrent que des compteurs.
 
 | Skill | Ce qu'il fait |
 |---|---|
+| `demarrer` | Le parcours complet pour un débutant : il regarde où tu en es et t'emmène d'un skill à l'autre, de la niche au premier bloc d'appels. |
+| `choisir-niche` | Sept questions, puis deux ou trois niches proposées parmi dix niches prêtes (`config/niches/`) ou une niche sur mesure ; règle la cible, les codes du registre et la grille de score. |
+| `construire-offre` | Remplit la fiche d'offre (`docs/offre.md`), écrit le bloc `offre` de la config, puis un premier script et des objections (`docs/scripts-de-base.md`). |
 | `installer` | Pose les questions (toi, l'offre, la cible, le script, les outils, le légal), écrit `config/niche.json` et guide l'installation complète (GitHub, Supabase, Vercel, secrets, vérification, compte propriétaire). |
 | `sourcer-leads` | Trouve les entreprises de la cible dans des sources publiques, les complète, les note, puis les importe dans le Poste (simulation d'abord). |
 | `accroches` | Écrit la première phrase de l'appel de chaque fiche, tirée du site de l'entreprise, contrôlée mot à mot puis relue avant l'écriture en base. |
@@ -24,12 +27,12 @@ mkdir -p ~/.claude/skills
 ln -s "<chemin du dépôt modèle>/skills/installer" ~/.claude/skills/installer
 ```
 
-**Les quatre skills d'usage** ne servent que dans ton dépôt (ils lancent ses scripts depuis sa racine) : lie-les dans son
+**Les sept autres skills** ne servent que dans ton dépôt (ils lancent ses scripts depuis sa racine) : lie-les dans son
 `.claude/skills/`, une fois l'installation faite. Depuis la racine de ton dépôt :
 
 ```bash
 mkdir -p .claude/skills
-for s in sourcer-leads accroches debrief ajuster-script; do ln -s "../../skills/$s" ".claude/skills/$s"; done
+for s in demarrer choisir-niche construire-offre sourcer-leads accroches debrief ajuster-script; do ln -s "../../skills/$s" ".claude/skills/$s"; done
 ```
 
 Le lien est relatif : il suit le dépôt si tu le déplaces. Pour qu'ils servent aussi ailleurs, lie-les plutôt dans `~/.claude/skills/`

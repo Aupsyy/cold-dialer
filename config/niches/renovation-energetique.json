@@ -1,0 +1,253 @@
+{
+  "code": "renovation-energetique",
+  "metier": "Entreprises de rénovation énergétique",
+  "tailleVisee": "3 à 30 salariés",
+  "pourquoi": "Le dirigeant d'une entreprise d'isolation ou de chauffage est joignable, et le besoin de demandes qualifiées est ouvertement discuté dans le métier, où les clients comparent beaucoup. Le panier des chantiers est élevé.",
+  "cible": {
+    "description": "Entreprises d'isolation, de chauffage et de travaux de rénovation énergétique pour les logements de particuliers, avec équipes de pose.",
+    "metiers": [
+      "isolation",
+      "pompe à chaleur",
+      "chauffage",
+      "rénovation énergétique"
+    ],
+    "tailleMin": 3,
+    "tailleMax": 30,
+    "decideur": "gérant",
+    "exclusions": [
+      "Grands groupes et réseaux de franchise nationaux",
+      "Entreprises en liquidation ou en sommeil",
+      "Entrepreneurs individuels sans salarié"
+    ]
+  },
+  "sources": {
+    "sirene": {
+      "naf": [
+        "43.29A",
+        "43.22B"
+      ],
+      "motsNomExclure": [
+        "holding"
+      ],
+      "exclureEI": true
+    },
+    "motsVidesAppariement": [
+      "sarl",
+      "sas",
+      "sasu",
+      "eurl",
+      "isolation",
+      "chauffage",
+      "energie",
+      "énergie",
+      "renovation",
+      "rénovation",
+      "thermique",
+      "et",
+      "de",
+      "des",
+      "du",
+      "la",
+      "le",
+      "les"
+    ],
+    "prefixesEmail": [
+      "contact",
+      "info",
+      "bonjour",
+      "devis",
+      "commercial"
+    ]
+  },
+  "google": {
+    "motsCles": [
+      "isolation des combles",
+      "installation pompe à chaleur",
+      "rénovation énergétique",
+      "entreprise de chauffage"
+    ]
+  },
+  "score": {
+    "criteres": [
+      {
+        "id": "societe",
+        "type": "forme_juridique",
+        "regle": {
+          "inclure": [
+            "5498",
+            "5499",
+            "5710",
+            "5720"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "taille",
+        "type": "effectif",
+        "regle": {
+          "min": 3,
+          "max": 30
+        },
+        "points": 25
+      },
+      {
+        "id": "installee",
+        "type": "anciennete",
+        "regle": {
+          "minAns": 3
+        },
+        "points": 15
+      },
+      {
+        "id": "naf_metier",
+        "type": "naf",
+        "regle": {
+          "inclure": [
+            "43.29A",
+            "43.22B"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "metier_dans_le_nom",
+        "type": "mot_nom",
+        "regle": {
+          "mots": [
+            "isol",
+            "therm",
+            "chauff",
+            "energ",
+            "énerg",
+            "renov",
+            "rénov"
+          ]
+        },
+        "points": 10
+      },
+      {
+        "id": "avis",
+        "type": "note_google",
+        "regle": {
+          "min": 4,
+          "avisMin": 10
+        },
+        "points": 10
+      },
+      {
+        "id": "site",
+        "type": "a_site",
+        "regle": {},
+        "points": 5
+      },
+      {
+        "id": "email",
+        "type": "a_email",
+        "regle": {},
+        "points": 5
+      }
+    ],
+    "seuils": {
+      "A": 70,
+      "B": 45
+    },
+    "plafond": 100
+  },
+  "script": {
+    "questions": [
+      {
+        "id": "source_demandes",
+        "texte": "Vos demandes de devis arrivent surtout d'où : plateformes de mise en relation, démarchage, bouche-à-oreille, internet ?",
+        "but": "Connaître la source actuelle des demandes."
+      },
+      {
+        "id": "qualite_demandes",
+        "texte": "Parmi les demandes que vous recevez, quelle part aboutit à un chantier, d'après votre ressenti ?",
+        "but": "Mesurer la qualité des demandes sans chiffre imposé."
+      },
+      {
+        "id": "type_travaux",
+        "texte": "Vous faites surtout de l'isolation, du chauffage, ou un ensemble de travaux de rénovation globale ?",
+        "but": "Savoir quels travaux il vise."
+      },
+      {
+        "id": "capacite_equipes",
+        "texte": "Si les demandes sérieuses étaient plus nombreuses, vos équipes de pose pourraient suivre ?",
+        "but": "Vérifier la capacité à absorber des chantiers."
+      }
+    ]
+  },
+  "objections": [
+    {
+      "code": "pas-le-temps",
+      "libelle": "Je n'ai pas le temps",
+      "reponse": "Je comprends, vous êtes sur les chantiers. Je ne vous prends pas de temps maintenant : on cale un échange court à l'heure qui vous arrange, plutôt en début de matinée ou en fin de journée ?",
+      "relance": "Je vous propose [deux créneaux] ; si aucun ne va, donnez-moi le vôtre."
+    },
+    {
+      "code": "assez-de-demandes",
+      "libelle": "J'ai assez de demandes",
+      "reponse": "Tant mieux. Et ces demandes aboutissent-elles à des chantiers ou vous passez beaucoup de temps sur des dossiers qui ne se concrétisent pas ?"
+    },
+    {
+      "code": "plateformes-suffisent",
+      "libelle": "Les plateformes me suffisent",
+      "reponse": "D'accord. Les demandes que vous y recevez vous conviennent-elles, sur la qualité et le prix auquel vous les payez ? Si oui, on n'a peut-être pas besoin de se parler ; sinon, l'échange sert à voir une autre voie."
+    },
+    {
+      "code": "deja-une-agence",
+      "libelle": "Je travaille déjà avec quelqu'un",
+      "reponse": "Très bien. Qu'est-ce qui vous plaît dans ce qu'il fait, et qu'aimeriez-vous voir en plus ? L'échange peut servir de point de comparaison, sans rien changer à ce qui fonctionne."
+    },
+    {
+      "code": "envoyez-un-mail",
+      "libelle": "Envoyez-moi un mail",
+      "reponse": "Avec plaisir. Pour vous écrire quelque chose d'utile : quel type de travaux voulez-vous développer en priorité ?",
+      "relance": "Et pour en parler de vive voix ensuite, je vous propose [deux créneaux]."
+    },
+    {
+      "code": "combien-ca-coute",
+      "libelle": "Combien ça coûte ?",
+      "reponse": "Ça dépend de votre zone et des travaux visés, et je ne veux pas vous donner un chiffre au hasard. C'est justement ce qu'on regarde ensemble pendant l'échange."
+    }
+  ],
+  "accroche": {
+    "exemples": [
+      "J'ai vu sur votre site l'isolation des combles et l'installation de pompes à chaleur que vous proposez : c'est ce type de chantier que vous voulez développer ?",
+      "Votre page sur la rénovation globale d'une maison m'a intéressé : c'est le type de projet que vous aimeriez avoir plus souvent dans votre secteur ?",
+      "Je vois que vous accompagnez vos clients dans leurs dossiers d'aides : c'est un vrai plus pour eux et une activité que vous voulez mettre en avant ?"
+    ],
+    "motsIndices": [
+      "isolation",
+      "combles",
+      "pompe à chaleur",
+      "chauffage",
+      "fenêtres",
+      "ventilation",
+      "rénovation globale",
+      "aides",
+      "chaudière"
+    ]
+  },
+  "debrief": {
+    "champs": [
+      {
+        "id": "source_demandes",
+        "question": "D'où viennent ses demandes de devis aujourd'hui ?"
+      },
+      {
+        "id": "qualite_demandes",
+        "question": "Que pense-t-il de la qualité de ces demandes ?"
+      },
+      {
+        "id": "type_travaux",
+        "question": "Isolation, chauffage, rénovation globale : que veut-il développer ?"
+      },
+      {
+        "id": "frein_principal",
+        "question": "Qu'est-ce qui le freine le plus ?"
+      }
+    ]
+  }
+}

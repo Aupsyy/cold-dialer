@@ -7,6 +7,16 @@ regions), MIT licence. The interface and docs are in French. *Screenshots to com
 
 ## Getting started
 
+**New to cold calling?** Copy the template (step 1), open your repository in Claude Code and paste:
+
+```text
+Read skills/demarrer/SKILL.md and follow it with me, one question at a time: I am new to cold calling.
+```
+
+It walks you through your niche (ten ready-made niches in `config/niches/`, or your own), your offer (`docs/offre.md`), your first
+script (`docs/scripts-de-base.md`), the installation, the companies to call (public register, optional official Google Places API
+with your own key) and your first calling session. Skills and documents are in French.
+
 1. **Copy the template** to your GitHub account as a private repository: "Use this template" on
    https://github.com/Aupsyy/cold-dialer, or `gh repo create <name> --private --template Aupsyy/cold-dialer --clone`.
 2. **Install**: with Claude Code, the `installer` skill (in `skills/`) asks the questions and runs the commands; by hand, follow
@@ -38,7 +48,7 @@ Next.js 15 on Vercel (functions in Paris, `cdg1`); Supabase (Paris region in the
 table and one team per instance; all business settings in `config/niche.json`. No AI key in the app: Claude Code skills extract.
 
 ## Installation
-Guided by the Claude Code skill `installer` (`skills/README.md` explains how to link the five skills), or by hand with
+Guided by the Claude Code skill `installer` (`skills/README.md` explains how to link the eight skills), or by hand with
 `docs/installation.md`. You need Node.js 22.18+, git, and GitHub, Supabase and Vercel accounts.
 
 ## Telephony and calendars

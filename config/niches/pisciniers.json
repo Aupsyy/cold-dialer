@@ -1,0 +1,247 @@
+{
+  "code": "pisciniers",
+  "metier": "Pisciniers",
+  "tailleVisee": "2 à 20 salariés",
+  "pourquoi": "Un projet de piscine est un gros achat, préparé longtemps à l'avance par une recherche locale et des devis comparés : être visible au bon moment compte. Le dirigeant est aussi le commercial et reste joignable.",
+  "cible": {
+    "description": "Constructeurs et installateurs de piscines et de spas, qui réalisent les travaux chez des particuliers dans leur zone.",
+    "metiers": [
+      "constructeur de piscines",
+      "pisciniste",
+      "installation de spas",
+      "rénovation de piscines"
+    ],
+    "tailleMin": 2,
+    "tailleMax": 20,
+    "decideur": "gérant",
+    "exclusions": [
+      "Réseaux de franchise nationaux",
+      "Vendeurs de piscines hors-sol en grande surface",
+      "Entreprises en liquidation ou en sommeil"
+    ]
+  },
+  "sources": {
+    "sirene": {
+      "naf": [
+        "43.99D"
+      ],
+      "motsNomInclure": [
+        "piscin",
+        "spa",
+        "bassin"
+      ],
+      "motsNomExclure": [
+        "holding"
+      ],
+      "exclureEI": true
+    },
+    "motsVidesAppariement": [
+      "sarl",
+      "sas",
+      "sasu",
+      "eurl",
+      "piscine",
+      "piscines",
+      "piscinier",
+      "construction",
+      "et",
+      "de",
+      "des",
+      "du",
+      "la",
+      "le",
+      "les"
+    ],
+    "prefixesEmail": [
+      "contact",
+      "info",
+      "bonjour",
+      "devis"
+    ]
+  },
+  "google": {
+    "motsCles": [
+      "constructeur de piscines",
+      "pisciniste",
+      "installation de piscine",
+      "rénovation de piscine"
+    ]
+  },
+  "score": {
+    "criteres": [
+      {
+        "id": "societe",
+        "type": "forme_juridique",
+        "regle": {
+          "inclure": [
+            "5498",
+            "5499",
+            "5710",
+            "5720"
+          ]
+        },
+        "points": 15
+      },
+      {
+        "id": "taille",
+        "type": "effectif",
+        "regle": {
+          "min": 2,
+          "max": 20
+        },
+        "points": 20
+      },
+      {
+        "id": "installee",
+        "type": "anciennete",
+        "regle": {
+          "minAns": 3
+        },
+        "points": 15
+      },
+      {
+        "id": "naf_metier",
+        "type": "naf",
+        "regle": {
+          "inclure": [
+            "43.99D"
+          ]
+        },
+        "points": 10
+      },
+      {
+        "id": "metier_dans_le_nom",
+        "type": "mot_nom",
+        "regle": {
+          "mots": [
+            "piscin",
+            "spa"
+          ]
+        },
+        "points": 20
+      },
+      {
+        "id": "avis",
+        "type": "note_google",
+        "regle": {
+          "min": 4,
+          "avisMin": 10
+        },
+        "points": 10
+      },
+      {
+        "id": "site",
+        "type": "a_site",
+        "regle": {},
+        "points": 5
+      },
+      {
+        "id": "email",
+        "type": "a_email",
+        "regle": {},
+        "points": 5
+      }
+    ],
+    "seuils": {
+      "A": 70,
+      "B": 45
+    },
+    "plafond": 100
+  },
+  "script": {
+    "questions": [
+      {
+        "id": "source_projets",
+        "texte": "Vos projets de piscine viennent surtout d'où : recherche sur internet, bouche-à-oreille, salons, partenaires ?",
+        "but": "Connaître la source actuelle des projets."
+      },
+      {
+        "id": "type_travaux",
+        "texte": "Vous construisez surtout du neuf, ou vous faites aussi de la rénovation et de l'entretien ?",
+        "but": "Savoir quel type de travaux il vise."
+      },
+      {
+        "id": "saison_devis",
+        "texte": "Les demandes de devis arrivent surtout au printemps : le reste de l'année, c'est plus calme pour vous ?",
+        "but": "Repérer le besoin hors saison."
+      },
+      {
+        "id": "capacite",
+        "texte": "Si les demandes sérieuses étaient plus nombreuses, votre planning de chantiers pourrait suivre ?",
+        "but": "Vérifier qu'il peut absorber des chantiers."
+      }
+    ]
+  },
+  "objections": [
+    {
+      "code": "pas-le-temps",
+      "libelle": "Je n'ai pas le temps",
+      "reponse": "Je comprends, vous êtes sur les chantiers. Je ne vous prends pas de temps maintenant : on cale un échange court à l'heure qui vous arrange, plutôt en début de matinée ou en fin de journée ?",
+      "relance": "Je vous propose [deux créneaux] ; si aucun ne va, donnez-moi le vôtre."
+    },
+    {
+      "code": "carnet-plein",
+      "libelle": "Mon carnet est plein",
+      "reponse": "C'est une excellente situation. Et pour la suite, après ces chantiers, la visibilité de l'entreprise vous inquiète un peu ou vous êtes serein ?"
+    },
+    {
+      "code": "bouche-a-oreille",
+      "libelle": "Je marche au bouche-à-oreille",
+      "reponse": "C'est la meilleure des recommandations. Elle dépend pourtant des chantiers déjà livrés. Aimeriez-vous aussi être trouvé par ceux qui comparent plusieurs piscinistes avant de choisir ?"
+    },
+    {
+      "code": "deja-une-agence",
+      "libelle": "Je travaille déjà avec quelqu'un",
+      "reponse": "Très bien. Qu'est-ce qui vous plaît dans ce qu'il fait, et qu'aimeriez-vous voir en plus ? L'échange peut servir de point de comparaison, sans rien changer à ce qui fonctionne."
+    },
+    {
+      "code": "envoyez-un-mail",
+      "libelle": "Envoyez-moi un mail",
+      "reponse": "Avec plaisir. Pour écrire quelque chose d'utile : plutôt de la construction neuve ou de la rénovation que vous voulez développer ?",
+      "relance": "Et pour en parler de vive voix ensuite, je vous propose [deux créneaux]."
+    },
+    {
+      "code": "combien-ca-coute",
+      "libelle": "Combien ça coûte ?",
+      "reponse": "Ça dépend de votre zone et du type de projets visés, et je ne veux pas vous donner un chiffre au hasard. C'est justement ce qu'on regarde ensemble pendant l'échange."
+    }
+  ],
+  "accroche": {
+    "exemples": [
+      "J'ai vu sur votre site la piscine à débordement avec plage immergée que vous avez construite : c'est ce type de projet que vous voulez développer ?",
+      "Vos photos de rénovation de bassins m'ont arrêté : c'est une activité que vous aimeriez développer davantage dans votre secteur ?",
+      "Je vois que vous installez aussi des spas et des pool houses : c'est une partie importante de votre activité aujourd'hui ou un complément ?"
+    ],
+    "motsIndices": [
+      "piscine",
+      "débordement",
+      "liner",
+      "coque",
+      "spa",
+      "pool house",
+      "terrasse",
+      "rénovation",
+      "margelle"
+    ]
+  },
+  "debrief": {
+    "champs": [
+      {
+        "id": "source_projets",
+        "question": "D'où viennent ses projets de piscine aujourd'hui ?"
+      },
+      {
+        "id": "type_travaux",
+        "question": "Neuf, rénovation, entretien : où se situe-t-il ?"
+      },
+      {
+        "id": "saison_devis",
+        "question": "Comment vit-il la saisonnalité des demandes ?"
+      },
+      {
+        "id": "frein_principal",
+        "question": "Qu'est-ce qui le freine le plus ?"
+      }
+    ]
+  }
+}
