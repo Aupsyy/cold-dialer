@@ -4,7 +4,11 @@
 // d'enregistrement lue (une activité « annonce » : la base la rattache à l'appel en cours), le rendez-vous de l'agenda interne.
 // Chaque entrée est revérifiée ici (lib/poste) ; la RLS refuse de toute façon ce qui sort du périmètre. Journaux : des codes seulement.
 
+import { after } from "next/server";
 import { niche } from "@/config/niche";
+import { envoyerEvenement } from "@/lib/concours/client";
+import { lireConfigConcours } from "@/lib/concours/configuration";
+import { issueConcours } from "@/lib/concours/traduction";
 import { contexteIssueDe, lieuDe } from "@/lib/poste/config-poste";
 import { messageFiche } from "@/lib/poste/erreurs";
 import { ligneRendezVous, validerSaisieRdv } from "@/lib/poste/rdv";
@@ -12,11 +16,33 @@ import { executerIssue, validerSaisieIssue, type IssueEnregistree } from "@/lib/
 import { echecBase, run, type Resultat } from "@/lib/server/action-kit";
 import { ErreurSaisie, uuidObligatoire } from "@/lib/server/validation";
 
+/**
+ * Session commune (facultative, docs/concours.md) : APRÈS l'enregistrement réussi d'une issue, ses compteurs partent vers la session.
+ * Ne part que le type d'issue du concours (jamais une donnée de la fiche). L'envoi est planifié après la réponse (after) : il n'attend
+ * pas l'appel, ne le fait jamais échouer et n'avale que ses propres erreurs.
+ */
+function signalerAuConcours(codeIssue: string): void {
+  try {
+    const config = lireConfigConcours(process.env);
+    if (!config) return;
+    const valeur = issueConcours(niche.issues.find((i) => i.code === codeIssue));
+    if (!valeur) return;
+    const tache = () => envoyerEvenement(config, valeur);
+    try {
+      after(tache);
+    } catch {
+      void tache();
+    }
+  } catch {
+    // jamais d'incidence sur l'enregistrement de l'appel
+  }
+}
+
 /** L'issue de l'appel : { leadId, issue, note?, rappelLe?, dureeS?, objection? }. */
 export async function enregistrerIssue(entree: unknown): Promise<Resultat<IssueEnregistree>> {
   return run("enregistrerIssue", "equipe", async (ctx) => {
     const saisie = validerSaisieIssue(entree, contexteIssueDe(niche, Date.now()));
-    return executerIssue(saisie, {
+    const enregistree = await executerIssue(saisie, {
       rpc: (fonction, args) => ctx.supabase.rpc(fonction, args),
       identifiants: async (leadId) => {
         const { data, error } = await ctx.supabase.from("leads").select("siren, telephone, mobile, entreprise, cp").eq("id", leadId).maybeSingle();
@@ -26,6 +52,8 @@ export async function enregistrerIssue(entree: unknown): Promise<Resultat<IssueE
         return { siren: s(d.siren), telephone: s(d.telephone), mobile: s(d.mobile), entreprise: s(d.entreprise), cp: s(d.cp) };
       },
     });
+    if (enregistree.ok) signalerAuConcours(saisie.issue.code);
+    return enregistree;
   });
 }
 

@@ -138,7 +138,7 @@ const fichiersVerifies = () => [...SKILLS.map((s) => `skills/${s}/SKILL.md`), ..
 /** Les options de tous les scripts lançables du dépôt (scripts/<dossier>/<script>.mjs). */
 function optionsDeTousLesScripts() {
   const toutes = new Set();
-  for (const dossier of ["sourcing", "accroches", "debrief", "install", "niche"]) {
+  for (const dossier of ["sourcing", "accroches", "debrief", "install", "niche", "concours"]) {
     for (const nom of readdirSync(join(RACINE, "scripts", dossier))) {
       if (nom.endsWith(".mjs")) for (const o of optionsAcceptees(`scripts/${dossier}/${nom}`)) toutes.add(o);
     }

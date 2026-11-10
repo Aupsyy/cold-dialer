@@ -7,6 +7,8 @@ import type { Metadata } from "next";
 import { Pastille, Section } from "@/app/_ui/elements";
 import { Avis } from "@/app/_ui/primitives";
 import { niche } from "@/config/niche";
+import { lireSession } from "@/lib/concours/client";
+import { lireConfigConcours, pagePublique } from "@/lib/concours/configuration";
 import { dateHeureLongue } from "@/lib/poste/temps";
 import { DOC_AGENDA, DOC_TELEPHONIE, VARIABLE_CLE_SERVICE, vueAide } from "@/lib/reglages/aide";
 import { DESCRIPTION_ROLE, DUREE_INVITATION_JOURS, estExpiree, libelleRole, rolesInvitables } from "@/lib/reglages/equipe";
@@ -68,6 +70,10 @@ export default async function PageReglages() {
   };
   const reg = d.reglages;
   const ecart = reg ? ecartPlafonds(reg.tentativesMax, niche.tentativesMax) : null;
+  // Session commune (facultative, docs/concours.md) : l'encart n'existe que si les trois variables sont posées ; le titre est lu avec un
+  // délai court, et sans lui l'encart s'affiche quand même.
+  const concours = lireConfigConcours(process.env);
+  const session = concours ? await lireSession(concours, { delaiMs: 2000 }) : null;
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
@@ -98,6 +104,22 @@ export default async function PageReglages() {
           <p className="text-sm text-stone-600 dark:text-stone-400">Ton profil n&apos;a pas pu être lu.</p>
         )}
       </Section>
+
+      {concours ? (
+        <Section titre="Session commune" id="session-commune">
+          <div className="space-y-2 text-sm">
+            <p>
+              Session commune{session?.titre ? ` : ${session.titre}` : ""}, tes compteurs partent (appels, conversations, rendez-vous), rien
+              d&apos;autre.
+            </p>
+            <p>
+              <a href={pagePublique(concours)} target="_blank" rel="noopener noreferrer" className="font-medium underline">
+                Voir la page publique de la session
+              </a>
+            </p>
+          </div>
+        </Section>
+      ) : null}
 
       <Section titre="Aide de mes outils" id="aide">
         <div className="space-y-5 text-sm">

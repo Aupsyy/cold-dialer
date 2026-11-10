@@ -43,6 +43,9 @@ opening lines from company websites with an anti-invention check (`docs/accroche
 (`docs/debrief.md`). Calendars: Calendly, iClosed, Google Calendar or internal, plus an ICS feed per person. A Settings screen holds
 the team, invitation links shown once, the attempts cap and daily goal, call recording with its legal framework, and the GDPR purge.
 
+**Shared session (optional).** An instance can send its call counters (calls, conversations, meetings, nothing else) to a shared
+leaderboard hosted elsewhere, for a calling contest between teams: `docs/concours.md`.
+
 ## Architecture
 Next.js 15 on Vercel (functions in Paris, `cdg1`); Supabase (Paris region in the install guide) with row level security on every
 table and one team per instance; all business settings in `config/niche.json`. No AI key in the app: Claude Code skills extract.

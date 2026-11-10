@@ -231,3 +231,10 @@ L'outil lui-même ne garantit ni rendez-vous ni chiffre : le résultat dépend d
 L'application n'envoie **rien** au prospect : ni SMS, ni e-mail, ni appel automatique, ni invitation. Les confirmations et rappels de
 rendez-vous sont ceux de ton outil d'agenda (Calendly, iClosed, Google), sous tes propres réglages. Les skills Claude Code n'envoient
 rien non plus : ils lisent, préparent et écrivent en base, après un essai et ton accord.
+
+## 7. Flux sortants facultatifs
+
+Une seule sortie de données existe en dehors de tes fournisseurs, et elle est **éteinte par défaut** : la session commune
+(`docs/concours.md`). Si tu la branches, le serveur envoie au service de la session un mot par appel (`sans_reponse`, `conversation` ou
+`rdv`) et ton pseudo ; jamais une donnée d'une fiche, d'un prospect ou d'une personne qui appelle. Si tes appelants doivent le savoir, dis-le
+dans ta politique interne ; pour la quitter, retire les trois variables `CONCOURS_*`.

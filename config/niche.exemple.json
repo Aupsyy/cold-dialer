@@ -105,28 +105,30 @@
     }
   ],
   "issues": [
-    { "code": "pas_repondu", "libelle": "Pas de réponse", "touche": "1", "rappelAuto": "creneau_alterne", "final": false },
-    { "code": "messagerie", "libelle": "Messagerie", "touche": "2", "rappelAuto": "creneau_alterne", "final": false },
+    { "code": "pas_repondu", "libelle": "Pas de réponse", "touche": "1", "rappelAuto": "creneau_alterne", "final": false, "concours": "sans_reponse" },
+    { "code": "messagerie", "libelle": "Messagerie", "touche": "2", "rappelAuto": "creneau_alterne", "final": false, "concours": "sans_reponse" },
     {
       "code": "standard",
       "libelle": "Standard ou barrage",
       "touche": "3",
       "rappelAuto": "creneau_alterne",
       "final": false,
+      "concours": "sans_reponse",
       "gabaritNote": ["Interlocuteur", "Meilleur moment"]
     },
-    { "code": "a_rappeler", "libelle": "À rappeler", "touche": "4", "final": false, "exigeRappel": true, "gabaritNote": ["Pourquoi", "Avec qui"] },
+    { "code": "a_rappeler", "libelle": "À rappeler", "touche": "4", "final": false, "concours": "conversation", "exigeRappel": true, "gabaritNote": ["Pourquoi", "Avec qui"] },
     {
       "code": "rdv_fixe",
       "libelle": "Rendez-vous fixé",
       "touche": "5",
       "final": true,
+      "concours": "rdv",
       "gabaritNote": ["Source actuelle", "Chantiers voulus", "Zone"]
     },
-    { "code": "pas_interesse", "libelle": "Pas intéressé", "touche": "6", "final": true, "gabaritNote": ["Raison"] },
-    { "code": "hors_cible", "libelle": "Hors cible", "touche": "7", "final": true, "gabaritNote": ["Raison"] },
-    { "code": "ne_plus_contacter", "libelle": "Ne plus contacter", "touche": "8", "final": true },
-    { "code": "sous_contrat", "libelle": "Engagé ailleurs", "touche": "9", "final": true, "gabaritNote": ["Jusqu'à quand"] }
+    { "code": "pas_interesse", "libelle": "Pas intéressé", "touche": "6", "final": true, "concours": "conversation", "gabaritNote": ["Raison"] },
+    { "code": "hors_cible", "libelle": "Hors cible", "touche": "7", "final": true, "concours": "conversation", "gabaritNote": ["Raison"] },
+    { "code": "ne_plus_contacter", "libelle": "Ne plus contacter", "touche": "8", "final": true, "concours": "conversation" },
+    { "code": "sous_contrat", "libelle": "Engagé ailleurs", "touche": "9", "final": true, "concours": "conversation", "gabaritNote": ["Jusqu'à quand"] }
   ],
   "tentativesMax": 4,
   "score": {

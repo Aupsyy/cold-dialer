@@ -64,6 +64,8 @@ Une question : les [discussions](https://github.com/Aupsyy/cold-dialer/discussio
 
 L'agenda (Calendly, iClosed, Google Agenda ou agenda interne, avec un flux ICS par personne) relie les rendez-vous aux fiches.
 
+En option, une **session commune** : ton Poste envoie ses seuls compteurs (appels, conversations, rendez-vous) à un classement partagé entre équipes, rien d'autre ; éteinte par défaut (`docs/concours.md`).
+
 ## L'écran Réglages
 
 - **Pour tous** : son profil (son nom, son e-mail chez l'outil de téléphonie) et l'aide de ses outils ; un appelant n'y voit que cela.

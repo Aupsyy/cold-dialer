@@ -228,6 +228,8 @@ const objetNiche = z.strictObject({
         final: z.boolean(),
         exigeRappel: z.boolean().optional(),
         gabaritNote: textes(10, 40).optional(),
+        /** Facultatif : ce que cette issue vaut dans une session commune (lib/concours). Sans lui, une valeur prudente est déduite du code. */
+        concours: z.enum(["sans_reponse", "conversation", "rdv", "ignorer"]).optional(),
       }),
     )
     .min(ISSUES_SOCLE.length)
