@@ -27,12 +27,18 @@ create table if not exists public.concours_branchement (
   ),
   code text not null check (code ~ '^[A-Z0-9]{4,12}$'),
   pseudo text not null check (char_length(btrim(pseudo)) between 1 and 40 and pseudo !~ '[[:cntrl:]]'),
-  jeton text not null check (jeton ~ '^[!-~]{8,512}$'),
+  jeton text not null check (char_length(jeton) between 8 and 512 and jeton ~ '^[!-~]+$'),
   rejoint_le timestamptz not null default now(),
   rejoint_par uuid references public.profiles (id) on delete set null
 );
 comment on table public.concours_branchement is 'Une ligne par équipe : la session commune rejointe (adresse du service, code, pseudo, jeton). Le jeton est un secret : aucun droit pour anon ni authenticated, seules les fonctions concours_* y touchent.';
 comment on column public.concours_branchement.jeton is 'Le jeton rendu par le service. Jamais rendu à un compte connecté : seule concours_jeton_serveur (clé service) le lit.';
+
+-- La contrainte du jeton est reposée à chaque passage : une première version de ce fichier bornait la longueur dans l'expression
+-- régulière ({8,512}), ce que PostgreSQL refuse au-delà de 255 ; la longueur est maintenant vérifiée à part.
+alter table public.concours_branchement drop constraint if exists concours_branchement_jeton_check;
+alter table public.concours_branchement add constraint concours_branchement_jeton_check
+  check (char_length(jeton) between 8 and 512 and jeton ~ '^[!-~]+$');
 
 alter table public.concours_branchement enable row level security;
 -- Aucune politique et aucun droit pour anon et authenticated : la table n'est lisible que par la clé service et par les fonctions

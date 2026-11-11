@@ -219,7 +219,7 @@ select pg_temp.doit_echouer($$select public.version_schema()$$, '42501', 'worksp
 
 -- La clé service : la version du schéma lue par /api/sante.
 select pg_temp.service();
-select pg_temp.verifier(public.version_schema() = 1, 'workspaces : version_schema() vaut 1 (comparée par /api/sante)');
+select pg_temp.verifier(public.version_schema() = 2, 'workspaces : version_schema() vaut 2 (comparée par /api/sante)');
 select pg_temp.admin();
 
 -- Aucune fonction du schéma public n'est exécutable par le visiteur anonyme (directement ou par PUBLIC) : une fonction ajoutée par une
