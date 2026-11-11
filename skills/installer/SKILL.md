@@ -169,8 +169,8 @@ plusieurs jours).
    réécris, relance. Ne modifie jamais `config/schema.ts`, `config/garde-fous.ts` ni un test pour faire passer la config.
 3. **La base.** Une fois le projet Supabase créé et `SUPABASE_DB_URL` collée par l'utilisateur : dans SON terminal,
    `supabase link --project-ref <ref>` (la CLI demande le mot de passe de la base : il le tape, rien ne passe par toi), puis
-   `supabase db push` (la migration `supabase/migrations/0001_schema.sql`). Sans la CLI : il colle ce fichier dans Supabase › SQL Editor
-   et le lance. Puis toi : `TEST_SQL_DISTANT=1 npm run test:sql`, SEULEMENT maintenant, sur la base neuve et vide (chaque test est
+   `supabase db push` (les migrations de `supabase/migrations/`, 0001 puis 0002). Sans la CLI : il colle ces fichiers, l'un après l'autre,
+   dans Supabase › SQL Editor et les lance. Puis toi : `TEST_SQL_DISTANT=1 npm run test:sql`, SEULEMENT maintenant, sur la base neuve et vide (chaque test est
    annulé ; le lanceur refuse une base distante sans cette variable : il est fait pour une base de test, jamais pour une base qui a de
    vraies fiches).
 4. **Le projet Vercel et le premier déploiement.** `vercel link --yes` (un nouveau projet, équipe par défaut ; pour choisir l'équipe ou un

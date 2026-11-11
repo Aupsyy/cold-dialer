@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState, type RefObject } from "react";
 import { reserverFiche } from "@/app/_actions/fiche";
-import { enregistrerIssue, noterAnnonceLue, poserRdv } from "@/app/_actions/issue";
+import { enregistrerIssue, noterAnnonceLue, poserRdv, signalerDebutAppel } from "@/app/_actions/issue";
 import { Pastille, PastilleTier, classesBouton } from "@/app/_ui/elements";
 import {
   ALERTE_SANS_ANNONCE,
@@ -211,6 +211,9 @@ export function AppelFiche(p: PropsAppelFiche) {
     }
     setMessage(erreurAdaptateur ?? messageAppel(resultat, copie));
     if (resultat === "echec") setProposerCopie(true);
+    // L'appel est lancé (l'outil l'a composé, ou le lien tel: est parti) : la session commune, si elle est branchée, peut le chronométrer.
+    // Sans effet quand elle ne l'est pas ; ne bloque rien et n'envoie aucune donnée de la fiche.
+    if (resultat === "lance" || resultat === "repli_tel") void signalerDebutAppel().catch(() => undefined);
   }
 
   function raccroche() {

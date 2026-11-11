@@ -39,14 +39,20 @@ https://supabase.com/dashboard › New project : un nom, un **mot de passe de ba
 de passe), la région **Paris (eu-west-3)** pour garder les données dans l'Union européenne. L'offre gratuite met le projet en pause
 après 7 jours sans activité.
 
-### 2.2 Le schéma (une seule migration)
+### 2.2 Le schéma (deux migrations, dans l'ordre)
 
 Choisis UNE des deux voies et garde-la ensuite :
 
 - avec la CLI : `supabase link --project-ref <ref>` (la référence du projet est dans son adresse sur le tableau de bord, ou dans Project
   Settings › General ; la CLI demande le mot de passe de la base), puis `supabase db push` ;
-- sans la CLI : Supabase › SQL Editor › New query, colle TOUT le contenu de `supabase/migrations/0001_schema.sql`, puis Run. (La CLI
-  garde un historique des migrations ; une migration collée à la main n'y figure pas.)
+- sans la CLI : Supabase › SQL Editor › New query, colle TOUT le contenu de `supabase/migrations/0001_schema.sql`, puis Run ; ouvre
+  une nouvelle requête et fais pareil avec `supabase/migrations/0002_concours_branchement.sql`. (La CLI garde un historique des
+  migrations ; une migration collée à la main n'y figure pas.)
+
+**Tu avais déjà installé l'application avant la migration 0002 ?** Joue seulement `0002_concours_branchement.sql` (même voie que ci-dessus :
+`supabase db push` la prend toute seule). Elle est additive et rejouable : elle ajoute une table et quatre fonctions, ne touche à aucune
+donnée, et sert au branchement à une session commune depuis l'écran Réglages (`docs/concours.md`). Tant qu'elle n'est pas jouée,
+`/api/sante` annonce `schema_a_jour: false` et l'encart « Session commune » te le dit ; le reste de l'application marche comme avant.
 
 ### 2.3 L'adresse de la base, en local seulement
 
@@ -190,7 +196,7 @@ Ouvre `https://<ton-domaine>/api/sante` dans ton navigateur : des booléens seul
 | Champ faux | Ce qu'il veut dire | Que faire |
 |---|---|---|
 | `base_joignable` | la base ne répond pas | vérifie `NEXT_PUBLIC_SUPABASE_URL` et les clés dans Vercel, et que le projet Supabase n'est pas en pause ; redéploie |
-| `schema_a_jour` | la migration n'est pas passée, ou la clé secrète manque (elle seule lit la version du schéma) | étape 2.2 ; `SUPABASE_SERVICE_ROLE_KEY` |
+| `schema_a_jour` | une migration n'est pas passée (la 0002 pour les installations plus anciennes), ou la clé secrète manque (elle seule lit la version du schéma) | étape 2.2 ; `SUPABASE_SERVICE_ROLE_KEY` |
 | `config_valide` | `config/niche.json` est refusé | `npm test` en local, corrige, redéploie |
 | `variables.supabase_url`, `supabase_cle_anon`, `supabase_cle_service` | une variable de Supabase manque | étape 4.2, puis redéploie |
 | `variables.telephonie` | il manque le secret du webhook de ton outil d'appel | étape 4.4, puis redéploie |

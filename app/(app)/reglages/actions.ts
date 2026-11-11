@@ -13,6 +13,9 @@
 
 import { revalidatePath } from "next/cache";
 import { niche } from "@/config/niche";
+import { ErreurLien, lireEtatBranchement, lireLienSession, pseudoSessionValide, type EtatBranchement } from "@/lib/concours/branchement";
+import { rejoindre } from "@/lib/concours/client";
+import { lireConfigConcours } from "@/lib/concours/configuration";
 import { ERR_FICHE_INTROUVABLE } from "@/lib/poste/erreurs";
 import { balayerAudiosOrphelins, listerParStockage } from "@/lib/reglages/audios";
 import {
@@ -285,6 +288,84 @@ export async function desactiverEnregistrement(): Promise<Resultat<null>> {
   return run("reglages.enregistrement_arret", "gestionnaire", async (ctx) =>
     ecrireReglages(ctx, "reglages.enregistrement_arret", { enregistrement_complet: false }, ERR_GENERIQUE),
   );
+}
+
+// ---------------------------------------------------------------------------------------------------------------------------------
+// Session commune (docs/concours.md) : se brancher d'un clic, sans variable d'hébergeur
+// ---------------------------------------------------------------------------------------------------------------------------------
+// Le jeton rendu par le service est rangé par la fonction SQL concours_poser (migration 0002) ; il ne revient JAMAIS au navigateur ni à
+// ces actions : concours_etat() ne le rend pas, et seule la clé service le lit (lib/concours/serveur.ts), pour l'envoi des compteurs.
+
+const ERR_BASE_SESSION =
+  "La base n'a pas la mise à jour de la session commune : joue le fichier supabase/migrations/0002_concours_branchement.sql dans Supabase (SQL Editor), puis recommence.";
+
+export interface SessionCommune {
+  /** Le branchement rangé en base (sans le jeton), ou null. */
+  branchement: EtatBranchement | null;
+  /** Faux si la base ne répond pas à concours_etat() : la migration 0002 n'est pas jouée. */
+  baseAJour: boolean;
+}
+
+/** L'état du branchement de l'équipe, lisible par tous ses membres, SANS le jeton. */
+export async function lireSessionCommune(): Promise<Resultat<SessionCommune>> {
+  return run("reglages.concours_etat", "equipe", async (ctx): Promise<Resultat<SessionCommune>> => {
+    const { data, error } = await ctx.supabase.rpc("concours_etat");
+    if (error) {
+      journal(`concours_etat:${codeDe(error)}`);
+      return { ok: true, data: { branchement: null, baseAJour: false } };
+    }
+    return { ok: true, data: { branchement: lireEtatBranchement(data), baseAJour: true } };
+  });
+}
+
+/**
+ * Un gestionnaire rejoint une session : { lien, code?, pseudo }. Le serveur lit le lien, appelle le service (rejoindre), puis range le
+ * résultat en base. La base est sondée AVANT de rejoindre : sans la migration 0002, on ne prend pas un pseudo qu'on ne pourrait pas garder.
+ */
+export async function rejoindreSession(entree: unknown): Promise<Resultat<{ pseudo: string }>> {
+  return run("reglages.concours_rejoindre", "gestionnaire", async (ctx) => {
+    const o = entree !== null && typeof entree === "object" && !Array.isArray(entree) ? (entree as Record<string, unknown>) : {};
+    let session: { url: string; code: string };
+    let pseudo: string;
+    try {
+      session = lireLienSession(o.lien, o.code);
+      pseudo = pseudoSessionValide(o.pseudo);
+    } catch (e) {
+      if (e instanceof ErreurLien) return { ok: false, error: e.message };
+      throw e;
+    }
+    const sonde = await ctx.supabase.rpc("concours_etat");
+    if (sonde.error) {
+      journal(`concours_sonde:${codeDe(sonde.error)}`);
+      return { ok: false, error: ERR_BASE_SESSION };
+    }
+    const r = await rejoindre(session, pseudo);
+    if (!r.ok) return { ok: false, error: r.erreur };
+    const { error } = await ctx.supabase.rpc("concours_poser", { p_url: session.url, p_code: session.code, p_pseudo: r.pseudo, p_jeton: r.jeton });
+    if (error) {
+      journal(`concours_poser:${codeDe(error)}`);
+      return {
+        ok: false,
+        error: `Tu as rejoint la session sous le pseudo « ${r.pseudo} », mais le branchement n'a pas pu être rangé. Recommence avec un autre pseudo, ou demande à l'organisateur de retirer l'ancien.`,
+      };
+    }
+    revalidatePath("/reglages");
+    return { ok: true, data: { pseudo: r.pseudo } };
+  });
+}
+
+/**
+ * Un gestionnaire quitte la session : le branchement (et son jeton) est effacé de la base, plus rien ne part. Le pseudo reste au classement
+ * du service (il faut le demander à l'organisateur pour l'effacer). `variablesRestantes` : les variables CONCOURS_* du serveur, si elles
+ * existent encore, continuent d'envoyer ; l'écran le dit.
+ */
+export async function quitterSession(): Promise<Resultat<{ variablesRestantes: boolean }>> {
+  return run("reglages.concours_quitter", "gestionnaire", async (ctx) => {
+    const { error } = await ctx.supabase.rpc("concours_retirer");
+    if (error) return echecBase("reglages.concours_quitter", error);
+    revalidatePath("/reglages");
+    return { ok: true, data: { variablesRestantes: lireConfigConcours(process.env) !== null } };
+  });
 }
 
 // ---------------------------------------------------------------------------------------------------------------------------------

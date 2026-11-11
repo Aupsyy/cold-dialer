@@ -13,7 +13,7 @@ import { chargerNiche } from "../config/charger.ts";
 import { creerRegistreAgenda } from "../lib/agenda/registre.ts";
 import { recevoirSyncGoogle } from "../lib/agenda/synchro-google.ts";
 import { recevoirWebhookAgenda } from "../lib/agenda/webhook.ts";
-import { etatSante } from "../lib/sante.ts";
+import { VERSION_SCHEMA, etatSante } from "../lib/sante.ts";
 import { entetesSecurite } from "../lib/securite/entetes.ts";
 import { LONGUEURS_MIN_SECRETS } from "../lib/telephonie/outils.ts";
 import { recevoirWebhookTelephonie } from "../lib/telephonie/reception.ts";
@@ -69,7 +69,7 @@ function instance({ env, deploye, sante = {}, entetes = null, protection = false
     if (u.pathname === "/api/sante") {
       const e = etatSante({
         env,
-        sondage: { baseJoignable: sante.baseJoignable ?? true, versionSchema: sante.versionSchema === undefined ? 1 : sante.versionSchema },
+        sondage: { baseJoignable: sante.baseJoignable ?? true, versionSchema: sante.versionSchema === undefined ? VERSION_SCHEMA : sante.versionSchema },
         configValide: sante.configValide ?? true,
         variablesTelephonie: adaptateurTelephonie(deploye.telephonie.fournisseur)?.webhook?.variables ?? [],
         variablesAgenda: registres.variablesAgenda(deploye.agenda.fournisseur),

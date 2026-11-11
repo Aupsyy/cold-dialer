@@ -7,20 +7,21 @@ import type { Metadata } from "next";
 import { Pastille, Section } from "@/app/_ui/elements";
 import { Avis } from "@/app/_ui/primitives";
 import { niche } from "@/config/niche";
-import { lireSession } from "@/lib/concours/client";
+import { compteursConcours, lireSession } from "@/lib/concours/client";
 import { lireConfigConcours, pagePublique } from "@/lib/concours/configuration";
 import { dateHeureLongue } from "@/lib/poste/temps";
 import { DOC_AGENDA, DOC_TELEPHONIE, VARIABLE_CLE_SERVICE, vueAide } from "@/lib/reglages/aide";
 import { DESCRIPTION_ROLE, DUREE_INVITATION_JOURS, estExpiree, libelleRole, rolesInvitables } from "@/lib/reglages/equipe";
 import { CASE_ACCEPTATION, blocageEnregistrement, cadreLegalEnregistrement, ecartPlafonds } from "@/lib/reglages/reglages";
 import { estGestionnaire } from "@/lib/roles";
-import { chargerReglages } from "./actions";
+import { chargerReglages, lireSessionCommune } from "./actions";
 import { Enregistrement } from "./_composants/Enregistrement";
 import { Equipe } from "./_composants/Equipe";
 import { Invitations } from "./_composants/Invitations";
 import { MonProfil } from "./_composants/MonProfil";
 import { PlafondObjectif } from "./_composants/PlafondObjectif";
 import { Purge } from "./_composants/Purge";
+import { SessionCommune, type VueSession } from "./_composants/SessionCommune";
 
 export const metadata: Metadata = { title: "Réglages" };
 export const dynamic = "force-dynamic";
@@ -70,10 +71,27 @@ export default async function PageReglages() {
   };
   const reg = d.reglages;
   const ecart = reg ? ecartPlafonds(reg.tentativesMax, niche.tentativesMax) : null;
-  // Session commune (facultative, docs/concours.md) : l'encart n'existe que si les trois variables sont posées ; le titre est lu avec un
-  // délai court, et sans lui l'encart s'affiche quand même.
-  const concours = lireConfigConcours(process.env);
-  const session = concours ? await lireSession(concours, { delaiMs: 2000 }) : null;
+  // Session commune (facultative, docs/concours.md) : le branchement rangé en base d'abord (la base ne rend que son état), les variables CONCOURS_*
+  // ensuite ; le titre et le score sont lus avec un délai court, et sans eux l'encart s'affiche quand même.
+  const commune = await lireSessionCommune();
+  const enBase = commune.ok ? commune.data.branchement : null;
+  const baseAJour = commune.ok ? commune.data.baseAJour : true;
+  const variables = lireConfigConcours(process.env);
+  const actif = enBase ?? variables;
+  const classement = actif ? await lireSession(actif, { delaiMs: 2000 }) : null;
+  const tentes = compteursConcours.envoyes + compteursConcours.echecs;
+  const vueSession: VueSession | null = actif
+    ? {
+        titre: classement?.titre || null,
+        lienPublic: pagePublique(actif),
+        pseudo: enBase ? enBase.pseudo : null,
+        scores: (() => {
+          const moi = enBase ? classement?.participants.find((p) => p.pseudo === enBase.pseudo) : undefined;
+          return moi ? { appels: moi.appels, conversations: moi.conversations, rdv: moi.rdv } : null;
+        })(),
+        envois: tentes > 0 ? { reussis: compteursConcours.envoyes, echoues: compteursConcours.echecs } : null,
+      }
+    : null;
 
   return (
     <div className="mx-auto max-w-4xl space-y-6">
@@ -105,19 +123,9 @@ export default async function PageReglages() {
         )}
       </Section>
 
-      {concours ? (
+      {vueSession || gestionnaire ? (
         <Section titre="Session commune" id="session-commune">
-          <div className="space-y-2 text-sm">
-            <p>
-              Session commune{session?.titre ? ` : ${session.titre}` : ""}, tes compteurs partent (appels, conversations, rendez-vous), rien
-              d&apos;autre.
-            </p>
-            <p>
-              <a href={pagePublique(concours)} target="_blank" rel="noopener noreferrer" className="font-medium underline">
-                Voir la page publique de la session
-              </a>
-            </p>
-          </div>
+          <SessionCommune gestionnaire={gestionnaire} session={vueSession} viaVariables={!enBase && variables !== null} baseAJour={baseAJour} />
         </Section>
       ) : null}
 

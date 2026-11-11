@@ -6,8 +6,8 @@
 
 import { after } from "next/server";
 import { niche } from "@/config/niche";
-import { envoyerEvenement } from "@/lib/concours/client";
-import { lireConfigConcours } from "@/lib/concours/configuration";
+import { envoyerDebut, envoyerEvenement } from "@/lib/concours/client";
+import { configurationEnvoi } from "@/lib/concours/serveur";
 import { issueConcours } from "@/lib/concours/traduction";
 import { contexteIssueDe, lieuDe } from "@/lib/poste/config-poste";
 import { messageFiche } from "@/lib/poste/erreurs";
@@ -19,15 +19,21 @@ import { ErreurSaisie, uuidObligatoire } from "@/lib/server/validation";
 /**
  * Session commune (facultative, docs/concours.md) : APRÈS l'enregistrement réussi d'une issue, ses compteurs partent vers la session.
  * Ne part que le type d'issue du concours (jamais une donnée de la fiche). L'envoi est planifié après la réponse (after) : il n'attend
- * pas l'appel, ne le fait jamais échouer et n'avale que ses propres erreurs.
+ * pas l'appel, ne le fait jamais échouer et n'avale que ses propres erreurs. La configuration est lue dans ce temps-là : le branchement
+ * rangé en base d'abord, les variables CONCOURS_* ensuite.
  */
 function signalerAuConcours(codeIssue: string): void {
   try {
-    const config = lireConfigConcours(process.env);
-    if (!config) return;
     const valeur = issueConcours(niche.issues.find((i) => i.code === codeIssue));
     if (!valeur) return;
-    const tache = () => envoyerEvenement(config, valeur);
+    const tache = async () => {
+      try {
+        const config = await configurationEnvoi();
+        if (config) await envoyerEvenement(config, valeur);
+      } catch {
+        // jamais d'incidence sur l'enregistrement de l'appel
+      }
+    };
     try {
       after(tache);
     } catch {
@@ -36,6 +42,35 @@ function signalerAuConcours(codeIssue: string): void {
   } catch {
     // jamais d'incidence sur l'enregistrement de l'appel
   }
+}
+
+/** Même chemin pour le début d'un appel : { jeton, debut } seulement, après la réponse, sans jamais lever. */
+function signalerDebutAuConcours(): void {
+  try {
+    const tache = async () => {
+      try {
+        const config = await configurationEnvoi();
+        if (config) await envoyerDebut(config);
+      } catch {
+        // un signal de confort : sans lui, l'appel et le classement marchent
+      }
+    };
+    try {
+      after(tache);
+    } catch {
+      void tache();
+    }
+  } catch {
+    // idem
+  }
+}
+
+/** Le bouton d'appel vient de lancer un appel : la session commune (si elle est branchée) peut le chronométrer. Aucune donnée n'est reçue ni envoyée. */
+export async function signalerDebutAppel(): Promise<Resultat<null>> {
+  return run("signalerDebutAppel", "equipe", async () => {
+    signalerDebutAuConcours();
+    return { ok: true, data: null };
+  });
 }
 
 /** L'issue de l'appel : { leadId, issue, note?, rappelLe?, dureeS?, objection? }. */

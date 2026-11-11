@@ -10,12 +10,19 @@ register(
   "data:text/javascript," +
     encodeURIComponent(`
 let faux = "";
-export async function initialize(d) { faux = d.faux; }
+let factices = "";
+export async function initialize(d) { faux = d.faux; factices = d.factices; }
 export async function resolve(specifier, context, next) {
-  if (specifier === "../supabase/server" && (context.parentURL ?? "").endsWith("/lib/server/action-kit.ts")) return { url: faux, shortCircuit: true };
+  const parent = context.parentURL ?? "";
+  if (specifier === "../supabase/server" && parent.endsWith("/lib/server/action-kit.ts")) return { url: faux, shortCircuit: true };
+  // La session commune lit son branchement avec la clé service (lib/concours/serveur.ts) : ici, un client service simulé.
+  if (specifier === "@/lib/supabase/service" && parent.endsWith("/lib/concours/serveur.ts")) return { url: factices, shortCircuit: true };
   return next(specifier, context);
 }`),
-  { parentURL: import.meta.url, data: { faux: new URL("./poste-base-factice.mjs", import.meta.url).href } },
+  {
+    parentURL: import.meta.url,
+    data: { faux: new URL("./poste-base-factice.mjs", import.meta.url).href, factices: new URL("./reglages-factices.mjs", import.meta.url).href },
+  },
 );
 
 const base = await import("./poste-base-factice.mjs");

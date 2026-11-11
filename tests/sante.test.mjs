@@ -1,5 +1,6 @@
 // /api/sante ne renvoie que des booléens (lib/sante.ts).
 import assert from "node:assert/strict";
+import { readdirSync } from "node:fs";
 import { test } from "node:test";
 import { etatSante, sonderBase, VERSION_SCHEMA } from "../lib/sante.ts";
 import { lire } from "./aides.mjs";
@@ -40,6 +41,10 @@ test("le sondage de la base : statut 0 = réseau coupé ; une réponse d'erreur 
   assert.deepEqual(await sonderBase(async () => { throw new Error("délai"); }), { baseJoignable: false, versionSchema: null });
 });
 
-test("la version attendue est celle de la migration", () => {
-  assert.match(lire("supabase/migrations/0001_schema.sql"), new RegExp(`function public\\.version_schema\\(\\)[\\s\\S]*?select ${VERSION_SCHEMA}\\b`));
+test("la version attendue est celle de la dernière migration qui la pose", () => {
+  const poses = readdirSync(new URL("../supabase/migrations/", import.meta.url))
+    .filter((f) => f.endsWith(".sql") && /function public\.version_schema\(\)/.test(lire(`supabase/migrations/${f}`)))
+    .sort();
+  assert.match(lire(`supabase/migrations/${poses.at(-1)}`), new RegExp(`function public\\.version_schema\\(\\)[\\s\\S]*?select ${VERSION_SCHEMA}\\b`));
+  assert.equal(poses.at(-1), "0002_concours_branchement.sql");
 });

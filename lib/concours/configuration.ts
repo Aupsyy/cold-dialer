@@ -16,7 +16,7 @@ export interface ConfigConcours {
 }
 
 const RE_CODE = /^[A-Z0-9]{4,12}$/;
-const RE_JETON = /^[\x21-\x7e]{8,512}$/;
+export const RE_JETON = /^[\x21-\x7e]{8,512}$/;
 
 /** L'adresse du service, nettoyée : https, ou http sur cette machine (localhost, 127.0.0.1) ; sans identifiants ni paramètres. Sinon null. */
 export function urlServiceValide(brut: unknown): string | null {

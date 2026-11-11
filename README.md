@@ -64,7 +64,7 @@ Une question : les [discussions](https://github.com/Aupsyy/cold-dialer/discussio
 
 L'agenda (Calendly, iClosed, Google Agenda ou agenda interne, avec un flux ICS par personne) relie les rendez-vous aux fiches.
 
-En option, une **session commune** : ton Poste envoie ses seuls compteurs (appels, conversations, rendez-vous) à un classement partagé entre équipes, rien d'autre ; éteinte par défaut (`docs/concours.md`).
+En option, une **session commune** : ton Poste envoie ses seuls compteurs (appels, conversations, rendez-vous) à un classement partagé entre équipes, rien d'autre ; éteinte par défaut, et on la rejoint d'un clic en collant son lien dans l'écran Réglages (`docs/concours.md`).
 
 ## L'écran Réglages
 
@@ -78,7 +78,7 @@ En option, une **session commune** : ton Poste envoie ses seuls compteurs (appel
 ## Architecture
 
 Une application Next.js 15 (App Router) déployée sur Vercel, avec ses fonctions en région Paris (`cdg1`). Une base Supabase (région
-Paris dans le guide d'installation), une seule migration (`supabase/migrations/0001_schema.sql`), la RLS sur chaque table et une équipe
+Paris dans le guide d'installation), deux migrations (`supabase/migrations/`, dans l'ordre), la RLS sur chaque table et une équipe
 par instance. Tout le métier dans `config/niche.json`, validé par `config/schema.ts` et `config/garde-fous.ts` au build et par
 `npm test` ; aucune clé d'IA dans l'application : l'extraction (accroches, débriefs) est faite par Claude Code, et les scripts ne font
 que la tuyauterie.

@@ -3,8 +3,8 @@
 
 import { valeurEnv, type Env } from "./integrations/base";
 
-/** La version du schéma posée par la migration 0001 (fonction SQL version_schema()). */
-export const VERSION_SCHEMA = 1;
+/** La version du schéma posée par la dernière migration (fonction SQL version_schema()) : 2 depuis la migration 0002. */
+export const VERSION_SCHEMA = 2;
 
 export interface Sondage {
   baseJoignable: boolean;

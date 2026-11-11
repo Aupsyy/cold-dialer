@@ -1,6 +1,7 @@
 // Le client du service de session commune. Module PUR : le réseau (fetch) et l'attente sont injectés, donc testable sans réseau.
 // Règles :
-//   - seuls des COMPTEURS partent : la requête d'un événement ne porte que { jeton, issue } (et « annuler »), jamais une donnée de fiche ;
+//   - seuls des COMPTEURS partent : la requête d'un événement ne porte que { jeton, issue } (et « annuler »), ou { jeton, debut } pour le
+//     début d'un appel, jamais une donnée de fiche ;
 //   - un envoi ne bloque ni ne fait échouer l'enregistrement d'un appel : il ne lève jamais, il rend un état ; délai de 3 secondes ;
 //   - les erreurs sont avalées et COMPTÉES par code (jamais de message, d'adresse ni de jeton) ;
 //   - un « 429 trop_vite » est retenté une fois après 2 secondes.
@@ -99,6 +100,24 @@ export async function envoyerEvenement(
     return "echec";
   } catch (e) {
     compterEchec(codeEchec(e));
+    return "echec";
+  }
+}
+
+export type EtatDebut = "envoye" | "ignore" | "echec";
+
+/**
+ * Prévient la session qu'un appel vient d'être lancé, pour qu'elle le chronomètre (POST …/evenement, corps { jeton, debut: true }).
+ * NE LÈVE JAMAIS, même délai de 3 secondes que l'envoi d'une issue. Le corps ne porte que le jeton et l'indicateur : aucune donnée de fiche.
+ * Un service qui ne connaît pas encore « debut » répond 400 : c'est rendu « ignore », sans rien casser ni compter comme un échec. C'est un
+ * signal de confort : il n'est pas retenté et ne touche pas aux compteurs d'envois.
+ */
+export async function envoyerDebut(config: ConfigConcours, options: OptionsReseau = {}): Promise<EtatDebut> {
+  try {
+    const r = await requete(`${baseApi(config)}/evenement`, "POST", { jeton: config.jeton, debut: true }, options);
+    if (r.statut === 200) return "envoye";
+    return r.statut === 400 ? "ignore" : "echec";
+  } catch {
     return "echec";
   }
 }

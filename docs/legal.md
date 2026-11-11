@@ -237,4 +237,8 @@ rien non plus : ils lisent, préparent et écrivent en base, après un essai et 
 Une seule sortie de données existe en dehors de tes fournisseurs, et elle est **éteinte par défaut** : la session commune
 (`docs/concours.md`). Si tu la branches, le serveur envoie au service de la session un mot par appel (`sans_reponse`, `conversation` ou
 `rdv`) et ton pseudo ; jamais une donnée d'une fiche, d'un prospect ou d'une personne qui appelle. Si tes appelants doivent le savoir, dis-le
-dans ta politique interne ; pour la quitter, retire les trois variables `CONCOURS_*`.
+dans ta politique interne. Le jeton que te rend le service, qui identifie ton équipe auprès de lui, est rangé dans ta base Supabase (table
+`concours_branchement`) : aucun compte connecté ne peut le lire, même le propriétaire ; seul le serveur le lit, avec la clé service, pour
+envoyer les compteurs. Pour quitter la session, utilise « Quitter la session » dans Réglages (le jeton est effacé de ta base ; ton pseudo
+reste au classement du service, que seul son organisateur peut effacer) ; si tu l'avais branchée par les variables `CONCOURS_*`, retire-les
+aussi.

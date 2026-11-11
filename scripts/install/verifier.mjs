@@ -99,7 +99,7 @@ function lireSante(sante, besoins, ok, aFaire) {
     [sante.base_joignable, "/api/sante : la base répond",
       "/api/sante : la base ne répond pas : vérifie NEXT_PUBLIC_SUPABASE_URL et les clés dans Vercel, puis que le projet Supabase n'est pas en pause (offre gratuite : pause après 7 jours sans activité)."],
     [sante.schema_a_jour, "/api/sante : le schéma est à jour",
-      "/api/sante : le schéma n'est pas à jour (ou illisible) : « supabase db push » (migration 0001), et SUPABASE_SERVICE_ROLE_KEY dans Vercel (seule elle lit la version), puis redéploie."],
+      "/api/sante : le schéma n'est pas à jour (ou illisible) : « supabase db push » (migrations 0001 et 0002), et SUPABASE_SERVICE_ROLE_KEY dans Vercel (seule elle lit la version), puis redéploie."],
     [sante.config_valide, "/api/sante : la config déployée est valide",
       "/api/sante : la config déployée est refusée : « npm test » ici, corrige config/niche.json, commit, puis redéploie."],
     [v.supabase_url, "/api/sante : NEXT_PUBLIC_SUPABASE_URL est posée",

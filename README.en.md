@@ -44,7 +44,7 @@ opening lines from company websites with an anti-invention check (`docs/accroche
 the team, invitation links shown once, the attempts cap and daily goal, call recording with its legal framework, and the GDPR purge.
 
 **Shared session (optional).** An instance can send its call counters (calls, conversations, meetings, nothing else) to a shared
-leaderboard hosted elsewhere, for a calling contest between teams: `docs/concours.md`.
+leaderboard hosted elsewhere, for a calling contest between teams. You join it in one click by pasting its link into the Settings screen: `docs/concours.md`.
 
 ## Architecture
 Next.js 15 on Vercel (functions in Paris, `cdg1`); Supabase (Paris region in the install guide) with row level security on every
